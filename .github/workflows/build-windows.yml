@@ -10,10 +10,13 @@ permissions:
 
 jobs:
   build-windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2.18.0
@@ -22,20 +25,26 @@ jobs:
           channel: 'master'
           cache: true
 
+      - name: Enable Windows Desktop
+        run: flutter config --enable-windows-desktop
+
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build Windows Runner (Release)
+        env:
+          CMAKE_GENERATOR: "Visual Studio 17 2022"
         run: flutter build windows --release
 
       - name: Compress Windows Bundle
         run: |
+          mkdir -p dist
           Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath dist\Spectra-v1.0.0-windows-x64.zip
 
       - name: Upload Windows Artifact to Release
-        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v1.0.0
           files: dist/Spectra-v1.0.0-windows-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
