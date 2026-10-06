@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
 part 'quality_presets.g.dart';
@@ -62,19 +61,26 @@ class AudioSourceAvailableQualityPresetsNotifier
     audioSourceConfigSnapshot.whenData((audioSourceConfig) {
       audioSourceSnapshot.whenData((audioSource) async {
         if (audioSource == null || audioSourceConfig == null) {
-          throw MetadataPluginException.noDefaultAudioSourcePlugin();
+          state = AudioSourcePresetsState();
+          return;
         }
-        final preferences = await SharedPreferences.getInstance();
-        final persistedStateStr =
-            preferences.getString("audioSourceState-${audioSourceConfig.slug}");
+        try {
+          final preferences = await SharedPreferences.getInstance();
+          final persistedStateStr =
+              preferences.getString("audioSourceState-${audioSourceConfig.slug}");
 
-        if (persistedStateStr != null) {
-          state =
-              AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr))
-                  .copyWith(
-            presets: audioSource.audioSource.supportedPresets,
-          );
-        } else {
+          if (persistedStateStr != null) {
+            state =
+                AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr))
+                    .copyWith(
+              presets: audioSource.audioSource.supportedPresets,
+            );
+          } else {
+            state = AudioSourcePresetsState(
+              presets: audioSource.audioSource.supportedPresets,
+            );
+          }
+        } catch (e) {
           state = AudioSourcePresetsState(
             presets: audioSource.audioSource.supportedPresets,
           );
@@ -115,14 +121,16 @@ class AudioSourceAvailableQualityPresetsNotifier
     final audioSourceConfig = await ref.read(metadataPluginsProvider
         .selectAsync((data) => data.defaultAudioSourcePluginConfig));
     if (audioSourceConfig == null) {
-      throw MetadataPluginException.noDefaultAudioSourcePlugin();
+      return;
     }
 
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      "audioSourceState-${audioSourceConfig.slug}",
-      jsonEncode(state),
-    );
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.setString(
+        "audioSourceState-${audioSourceConfig.slug}",
+        jsonEncode(state),
+      );
+    } catch (_) {}
   }
 }
 

@@ -49,7 +49,7 @@ class ServerPlaybackRoutes {
     return join(
       await UserPreferencesNotifier.getMusicCacheDir(),
       ServiceUtils.sanitizeFilename(
-        '${track.query.name} - ${track.query.artists.map((d) => d.name).join(",")} (${track.info.id}).${track.qualityPreset!.getFileExtension()}',
+        '${track.query.name} - ${track.query.artists.map((d) => d.name).join(",")} (${track.info.id}).${track.qualityPreset?.getFileExtension() ?? "m4a"}',
       ),
     );
   }
@@ -97,7 +97,7 @@ class ServerPlaybackRoutes {
       return dio_lib.Response(
         statusCode: 200,
         headers: Headers.fromMap({
-          "content-type": ["audio/${track.qualityPreset!.name}"],
+          "content-type": ["audio/${track.qualityPreset?.name ?? "mp4"}"],
           "content-length": ["$fileLength"],
           "accept-ranges": ["bytes"],
           "content-range": ["bytes 0-$fileLength/$fileLength"],
@@ -106,11 +106,18 @@ class ServerPlaybackRoutes {
       );
     }
 
-    String url = track.url ??
-        await ref
-            .read(sourcedTrackProvider(track.query).notifier)
-            .swapWithNextSibling()
-            .then((track) => track.url!);
+    String? resolvedUrl = track.url;
+    if (resolvedUrl == null) {
+      final swapped = await ref
+          .read(sourcedTrackProvider(track.query).notifier)
+          .swapWithNextSibling();
+      resolvedUrl = swapped.url;
+    }
+
+    if (resolvedUrl == null) {
+      throw Exception("No streaming URL available for track ${track.query.name}");
+    }
+    String url = resolvedUrl;
 
     final options = Options(
       headers: {
@@ -131,14 +138,22 @@ class ServerPlaybackRoutes {
         final sourcedTrack = await ref
             .read(sourcedTrackProvider(track.query).notifier)
             .refreshStreamingUrl();
-        url = sourcedTrack.url!;
-        probeRes = await dio.get<ResponseBody>(url, options: options);
+        if (sourcedTrack.url != null) {
+          url = sourcedTrack.url!;
+          probeRes = await dio.get<ResponseBody>(url, options: options);
+        } else {
+          throw Exception("Refreshed URL was null");
+        }
       } catch (_) {
         final swapped = await ref
             .read(sourcedTrackProvider(track.query).notifier)
             .swapWithNextSibling();
-        url = swapped.url!;
-        probeRes = await dio.get<ResponseBody>(url, options: options);
+        if (swapped.url != null && swapped.url != url) {
+          url = swapped.url!;
+          probeRes = await dio.get<ResponseBody>(url, options: options);
+        } else {
+          rethrow;
+        }
       }
     }
 
@@ -194,11 +209,18 @@ class ServerPlaybackRoutes {
       );
     }
 
-    String url = track.url ??
-        await ref
-            .read(sourcedTrackProvider(track.query).notifier)
-            .swapWithNextSibling()
-            .then((track) => track.url!);
+    String? resolvedUrl = track.url;
+    if (resolvedUrl == null) {
+      final swapped = await ref
+          .read(sourcedTrackProvider(track.query).notifier)
+          .swapWithNextSibling();
+      resolvedUrl = swapped.url;
+    }
+
+    if (resolvedUrl == null) {
+      throw Exception("No streaming URL available for track ${track.query.name}");
+    }
+    String url = resolvedUrl;
 
     // Redirect to m3u8 link directly as it handles range requests internally
     if (url.contains(".m3u8") || url.contains("manifest/hls")) {
@@ -242,15 +264,23 @@ class ServerPlaybackRoutes {
               .read(sourcedTrackProvider(track.query).notifier)
               .refreshStreamingUrl();
 
-          url = sourcedTrack.url!;
-          res = await dio.get<ResponseBody>(url, options: options);
+          if (sourcedTrack.url != null) {
+            url = sourcedTrack.url!;
+            res = await dio.get<ResponseBody>(url, options: options);
+          } else {
+            throw Exception("Refreshed track URL is null");
+          }
         } catch (_) {
           final swapped = await ref
               .read(sourcedTrackProvider(track.query).notifier)
               .swapWithNextSibling();
 
-          url = swapped.url!;
-          res = await dio.get<ResponseBody>(url, options: options);
+          if (swapped.url != null && swapped.url != url) {
+            url = swapped.url!;
+            res = await dio.get<ResponseBody>(url, options: options);
+          } else {
+            rethrow;
+          }
         }
       } else {
         rethrow;
@@ -260,8 +290,12 @@ class ServerPlaybackRoutes {
           .read(sourcedTrackProvider(track.query).notifier)
           .swapWithNextSibling();
 
-      url = swapped.url!;
-      res = await dio.get<ResponseBody>(url, options: options);
+      if (swapped.url != null && swapped.url != url) {
+        url = swapped.url!;
+        res = await dio.get<ResponseBody>(url, options: options);
+      } else {
+        rethrow;
+      }
     }
 
     AppLogger.log.i(
@@ -303,7 +337,7 @@ class ServerPlaybackRoutes {
 
         await trackPartialCacheFile.rename(trackCacheFile.path);
 
-        if (track.qualityPreset!.getFileExtension() == "weba") return;
+        if (track.qualityPreset?.getFileExtension() == "weba") return;
 
         final imageBytes = await ServiceUtils.downloadImage(
           track.query.album.images.asUrlString(

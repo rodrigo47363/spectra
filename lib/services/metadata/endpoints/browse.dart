@@ -59,8 +59,8 @@ class MetadataPluginBrowseEndpoint {
           },
         ),
       );
-    } catch (e, stack) {
-      AppLogger.reportError(e, stack);
+    } catch (e) {
+      AppLogger.log.w("Metadata browse sections unavailable: $e");
       return SpotubePaginationResponseObject(
         limit: limit ?? 20,
         nextOffset: null,
@@ -116,8 +116,8 @@ class MetadataPluginBrowseEndpoint {
           }
         },
       );
-    } catch (e, stack) {
-      AppLogger.reportError(e, stack);
+    } catch (e) {
+      AppLogger.log.w("Metadata browse sectionItems unavailable: $e");
       return SpotubePaginationResponseObject(
         limit: limit ?? 20,
         nextOffset: null,

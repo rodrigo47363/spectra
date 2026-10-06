@@ -102,9 +102,12 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
 
     final plugins = await database.pluginsTable.select().get();
 
-    final pluginState = await toStatePlugins(plugins);
+    var pluginState = await toStatePlugins(plugins);
 
     await _loadDefaultPlugins(pluginState);
+
+    final refreshedPlugins = await database.pluginsTable.select().get();
+    pluginState = await toStatePlugins(refreshedPlugins);
 
     return pluginState;
   }
@@ -166,6 +169,23 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       }
       if (plugin.selectedForAudioSource) {
         defaultAudioSourcePlugin = pluginConfigs.length - 1;
+      }
+    }
+
+    if (defaultAudioSourcePlugin == -1) {
+      final fallbackIndex = pluginConfigs.indexWhere(
+        (p) => p.abilities.contains(PluginAbilities.audioSource),
+      );
+      if (fallbackIndex != -1) {
+        defaultAudioSourcePlugin = fallbackIndex;
+      }
+    }
+    if (defaultMetadataPlugin == -1) {
+      final fallbackIndex = pluginConfigs.indexWhere(
+        (p) => p.abilities.contains(PluginAbilities.metadata),
+      );
+      if (fallbackIndex != -1) {
+        defaultMetadataPlugin = fallbackIndex;
       }
     }
 

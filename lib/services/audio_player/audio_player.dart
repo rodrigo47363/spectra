@@ -53,7 +53,7 @@ abstract class AudioPlayerInterface {
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {
-      AppLogger.reportError(event, StackTrace.current);
+      AppLogger.log.w("Player stream error: $event");
     });
   }
 
