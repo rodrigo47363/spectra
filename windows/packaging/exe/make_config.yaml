@@ -1,0 +1,9 @@
+app_id: 80B901C8-D6FE-494E-8AF7-A2BD440E8644
+publisher: Spectra Project
+publisher_url: https://github.com/rodrigo47363/spectra
+display_name: Spectra
+create_desktop_icon: true
+install_dir_name: Spectra
+script_template: inno_setup.iss
+locales:
+  - en

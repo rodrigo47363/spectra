@@ -1,0 +1,6 @@
+package dev.rodrigo.spectra
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}

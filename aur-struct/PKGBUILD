@@ -1,0 +1,39 @@
+# Maintainer: Rodrigo <rodrigo@spectra.dev>
+pkgname=spectra-bin
+pkgver=%{{SPOTUBE_VERSION}}%
+pkgrel=%{{PKGREL}}%
+epoch=
+pkgdesc="Open source extensible Music streaming client for Linux"
+arch=(x86_64)
+url="https://github.com/rodrigo47363/spectra"
+license=('BSD-4-Clause')
+groups=()
+depends=('mpv' 'libappindicator-gtk3' 'libsecret' 'jsoncpp' 'libnotify' 'xdg-user-dirs' 'webkit2gtk-4.1')
+makedepends=()
+checkdepends=()
+optdepends=('yt-dlp')
+provides=('spectra')
+conflicts=('spectra')
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("https://github.com/rodrigo47363/spectra/releases/download/v${pkgver}/spectra-linux-${pkgver}-x86_64.tar.xz")
+noextract=()
+md5sums=(%{{LINUX_MD5}}%)
+validpgpkeys=()
+
+package() {
+  install -dm755 "${pkgdir}/usr/share/icons/spectra"
+  install -dm755 "${pkgdir}/usr/share/applications"
+  install -dm755 "${pkgdir}/usr/share/appdata"
+  install -dm755 "${pkgdir}/usr/share/${pkgname}"
+  install -dm755 "${pkgdir}/usr/bin"
+
+  mv ./spectra.desktop "${pkgdir}/usr/share/applications"
+  mv ./spectra-logo.png "${pkgdir}/usr/share/icons/spectra/" 2>/dev/null || true
+  mv ./dev.rodrigo.spectra.appdata.xml "${pkgdir}/usr/share/appdata/spectra.appdata.xml" 2>/dev/null || true
+  cp -ra ./data ./lib ./spectra "${pkgdir}/usr/share/${pkgname}"
+  ln -sf "/usr/share/${pkgname}/spectra" "${pkgdir}/usr/bin/spectra"
+}

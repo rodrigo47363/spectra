@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Spectra
+Exec=/usr/bin/spectra
+Icon=spectra
+Comment=High-Performance Cross-Platform Music Player
+Terminal=false
+Categories=Audio;Music;Player;AudioVideo;
+StartupWMClass=spectra

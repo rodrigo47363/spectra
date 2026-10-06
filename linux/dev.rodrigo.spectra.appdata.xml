@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>dev.rodrigo.spectra</id>
+  <name>Spectra</name>
+  <summary>
+    Freedom of music
+  </summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-4-Clause</project_license>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </recommends>
+  <developer_name>Rodrigo</developer_name>
+  <url type="bugtracker">https://github.com/rodrigo47363/spectra/issues</url>
+  <url type="homepage">https://github.com/rodrigo47363/spectra</url>
+  <description>
+    <p>Open source music client that doesn't require Premium nor uses Electron! Available for
+      both desktop &amp; mobile!</p>
+    <p>Following are the features that currently Spectra offers:</p>
+    <ul>
+      <li>🚫 No ads, thanks to the use of public &amp; free music metadata providers and YT Music
+        APIs¹</li>
+      <li>⬇️ Downloadable tracks</li>
+      <li>🖥️ 📱 Cross-platform support</li>
+      <li>🪶 Small size &amp; less data usage</li>
+      <li>🕵️ Anonymous/guest login</li>
+      <li>🕒 Time synced lyrics</li>
+      <li>✋ No telemetry, diagnostics or user data collection</li>
+      <li>🚀 Native performance</li>
+      <li>📖 Open source/libre software</li>
+      <li>🔉 Playback control is done locally, not on the server</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">
+        assets/branding/spotube-screenshot.png
+      </image>
+      <caption>Spectra screenshot</caption>
+    </screenshot>
+  </screenshots>
+  <launchable type="desktop-id">dev.rodrigo.spectra.desktop</launchable>
+  <releases>
+    <release version="1.0.0" date="2026-10-06">
+      <description>
+        <p>Spectra 1.0.0: Initial release of Spectra music client.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1" />
+  <update_contact>rodrigo@spectra.dev</update_contact>
+</component>
