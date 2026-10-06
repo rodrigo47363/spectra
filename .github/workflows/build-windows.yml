@@ -1,0 +1,41 @@
+name: Build Windows Binary
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2.18.0
+        with:
+          flutter-version: '3.35.2'
+          channel: 'master'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows Runner (Release)
+        run: flutter build windows --release
+
+      - name: Compress Windows Bundle
+        run: |
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath dist\Spectra-v1.0.0-windows-x64.zip
+
+      - name: Upload Windows Artifact to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/Spectra-v1.0.0-windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
