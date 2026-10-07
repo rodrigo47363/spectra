@@ -42,7 +42,7 @@ A diferencia de la mayoría de los clientes de streaming contemporáneos, Spectr
 | Plataforma | Paquete / Formato | Arquitectura | Enlace de Descarga |
 | :--- | :--- | :--- | :--- |
 | **Linux** | Paquete Debian (`.deb`) | `x86_64 / amd64` | [Descargar .deb](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.deb) |
-| **Linux** | Binario Universal Bundle | `x86_64 / amd64` | [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.0.0) |
+| **Linux** | Binario Universal Bundle | `x86_64 / amd64` | [Descargar .tar.gz](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.tar.gz) |
 | **Android** | Universal Release (`.apk`) | `arm64-v8a, armeabi-v7a, x86_64` | [Descargar .apk](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-android-universal.apk) |
 | **Windows** | Instalador Setup (`.exe`) | `x86_64` | [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.0.0) |
 
@@ -123,7 +123,21 @@ Ubicación del paquete:
 dart run cli/cli.dart build windows
 ```
 El instalador se generará en:
-`dist/Spotube-windows-x86_64-setup.exe`
+`dist/Spectra-windows-x86_64-setup.exe`
+
+---
+
+## ⚙️ Optimización Operativa y Ajustes de Reproducción
+
+Para garantizar una experiencia de reproducción fluida y continua sin interrupciones:
+
+### En Android:
+1. **Motor de Extracción de Audio:** En *Ajustes > Reproducción*, puedes alternar entre **NewPipe** y **YouTubeExplode**. Si experimentas estrangulamiento de velocidad (*rate limiting*) o latencia por parte de los servidores de origen, cambiar al motor alternativo restablece el flujo instantáneamente.
+2. **Formato de Códec de Audio:** Selecciona **`m4a` / `mp4`** (AAC nativo) para aprovechar la decodificación por hardware de Android (*MediaCodec*), reduciendo el consumo térmico y el gasto de batería.
+3. **Gestión de Batería en Segundo Plano:** En *Ajustes de Android > Aplicaciones > Spectra > Batería*, selecciona **"Sin restricciones"** (o desactiva la optimización). Esto previene que el sistema operativo congele el socket de loopback local (`127.0.0.1`) cuando la pantalla esté apagada.
+
+### En Linux:
+* Spectra utiliza el motor nativo `media_kit` enlazado con las librerías dinámicas del sistema `libmpv`. Asegúrate de tener instalados los paquetes `libmpv-dev` o `mpv` para decodificación acelerada por hardware (VA-API / VDPAU).
 
 ---
 
