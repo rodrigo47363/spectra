@@ -50,23 +50,50 @@ A diferencia de la mayoría de los clientes de streaming contemporáneos, Spectr
 
 ## 🏗️ Arquitectura del Sistema
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                       SPECTRA CLIENT (UI)                       │
-│           Flutter Framework • Shadcn Flutter • Riverpod          │
-└──────────────┬──────────────────────────────┬───────────────────┘
-               │                              │
-┌──────────────▼──────────────┐┌──────────────▼───────────────────┐
-│       Core Playback         ││         Data & Storage           │
-│  MediaKit Engine + libmpv   ││    SQLite (Drift) + Safe KV      │
-│     (Native C++ Audio)      ││   (Local-First Persistence)      │
-└──────────────┬──────────────┘└──────────────────────────────────┘
-               │
-┌──────────────▼──────────────────────────────────────────────────┐
-│              BYOMM Plugin & Audio Source Engine                 │
-│      Dynamic Resolution • Safe HTTP Transport • Zero-Telemetry   │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph UI ["🖥️ SPECTRA CLIENT (UI)"]
+        direction TB
+        U["Flutter Framework • Shadcn Flutter • Riverpod"]
+    end
+
+    subgraph Core ["⚡ Core Playback"]
+        direction TB
+        C["MediaKit Engine + libmpv<br/><i>(Decodificación Nativa C++ / Baja Latencia)</i>"]
+    end
+
+    subgraph Data ["🗄️ Data & Storage"]
+        direction TB
+        D["SQLite (Drift) + Safe KV<br/><i>(Persistencia Local-First & Cifrado)</i>"]
+    end
+
+    subgraph Engine ["🛡️ BYOMM Plugin & Audio Source Engine"]
+        direction TB
+        E["Resolución Dinámica (NewPipe / YouTubeExplode)<br/>Proxy Local Loopback (127.0.0.1) • Zero-Telemetry Guard"]
+    end
+
+    UI -->|Comandos de Control / Streams| Core
+    UI -->|Gestión de Estado / Caché| Data
+    Core -->|Streaming de Audio| Engine
 ```
+
+### Desglose de Componentes:
+
+1. **Spectra Client (UI):**
+   * Construido sobre **Flutter** con gestión de estado reactiva mediante **Riverpod**.
+   * Sistema de diseño adaptativo **Shadcn UI** optimizado para consumo mínimo de ciclos de GPU en entornos de escritorio y móviles.
+
+2. **Core Playback (Audio C++ Nativo):**
+   * Integración directa mediante FFI (*Foreign Function Interface*) con **`libmpv`** a través de **`media_kit`**.
+   * Soporte de decodificación por hardware (VA-API / VDPAU en Linux, MediaCodec en Android) garantizando reproducción *bit-perfect*.
+
+3. **Data & Storage (Local-First):**
+   * Persistencia relacional completamente local en **SQLite** mediante el ORM **Drift**.
+   * Almacenamiento seguro de credenciales y claves mediante almacenes locales cifrados (Keyring/SecretService en Linux, EncryptedSharedPreferences en Android).
+
+4. **BYOMM Plugin & Audio Source Engine:**
+   * Motor desacoplado (*Bring Your Own Music Metadata*) para resolver streams en tiempo real.
+   * Servidor proxy Shelf confinado estrictamente a la interfaz de loopback `127.0.0.1`, blindando las transmisiones contra fugas de red y aislando los metadatos de telemetría de terceros.
 
 ---
 
