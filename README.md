@@ -2,16 +2,16 @@
 
 <div align="center">
 
-![Spectra Logo](assets/branding/spectra-logo.png)
+<img src="assets/branding/spectra-logo.png" alt="Spectra Logo" width="160" />
 
-### *Reproductor y gestor de audio libre, diseñado con enfoque de privacidad por diseño, bajo consumo de recursos y total soberanía sobre los datos del usuario.*
+### *Reproductor y gestor de audio libre, diseñado bajo el principio de privacidad desde el diseño (privacy by design), bajo consumo de recursos y total soberanía sobre los datos del usuario.*
 
 [![Release](https://img.shields.io/badge/Release-v1.0.0-00E5FF?style=for-the-badge&logo=github)](https://github.com/rodrigo47363/spectra/releases)
 [![License](https://img.shields.io/badge/License-BSD--4--Clause-blue?style=for-the-badge)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platforms-Android%20%7C%20Windows%20%7C%20Linux-brightgreen?style=for-the-badge)]()
-[![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero%20%2F%20No%20Tracking-red?style=for-the-badge)]()
+[![Platform](https://img.shields.io/badge/Platforms-Android%20%7C%20Windows%20%7C%20Linux-brightgreen?style=for-the-badge)](#descargas-y-binarios)
+[![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero%20%2F%20No%20Tracking-red?style=for-the-badge)](PRIVACY_POLICY.md)
 
-[Descargas](#-descargas-y-binarios) • [Características](#-características-técnicas) • [Arquitectura](#-arquitectura-del-sistema) • [Compilación](#-compilación-y-despliegue) • [Autor](#-arquitecto-y-desarrollo)
+[Descargas](#descargas-y-binarios) • [Características](#características-técnicas) • [Arquitectura](#arquitectura-del-sistema) • [Compilación](#compilación-y-despliegue) • [Optimización](#optimización-operativa-y-ajustes-de-reproducción) • [Versiones](#control-de-versiones) • [Autor](#arquitecto-y-desarrollo)
 
 ---
 
@@ -28,7 +28,7 @@ A diferencia de la mayoría de los clientes de streaming contemporáneos, Spectr
 ## 🌟 Características Técnicas
 
 * 🔒 **Cero Telemetría & Privacidad Radical:** Sin *fingerprinting*, sin analíticas de comportamiento en segundo plano ni transmisión de identificadores únicos de hardware.
-* ⚡ **Decodificación Nativa por Hardware:** Integración con `libmpv` / `media_kit` para streaming de ultra-baja latencia y reproducción bit-perfect de alta fidelidad.
+* ⚡ **Decodificación Nativa por Hardware:** Integración con `libmpv` / `media_kit` para streaming de ultrabaja latencia y reproducción bit-perfect de alta fidelidad.
 * 🧩 **Ecosistema Extensible de Plugins:** Arquitectura modular que permite extender proveedores de metadatos, letras y fuentes de audio.
 * 🗄️ **Persistencia Local-First:** Base de datos relacional local en **SQLite (Drift)** y almacenamiento de preferencias cifrado. No depende de servidores centralizados.
 * 📥 **Gestor de Descargas Integrado:** Descarga pistas de audio con etiquetado ID3 automatizado y metadatos completos incrustados.
@@ -42,8 +42,8 @@ A diferencia de la mayoría de los clientes de streaming contemporáneos, Spectr
 | Plataforma | Paquete / Formato | Arquitectura | Enlace de Descarga |
 | :--- | :--- | :--- | :--- |
 | **Linux** | Paquete Debian (`.deb`) | `x86_64 / amd64` | [Descargar .deb](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.deb) |
-| **Linux** | Binario Universal Bundle | `x86_64 / amd64` | [Descargar .tar.gz](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.tar.gz) |
-| **Android** | Universal Release (`.apk`) | `arm64-v8a, armeabi-v7a, x86_64` | [Descargar .apk](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-android-universal.apk) |
+| **Linux** | Binario Portable Bundle (`.tar.gz`) | `x86_64 / amd64` | [Descargar .tar.gz](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.tar.gz) |
+| **Android** | Paquete Universal (`.apk`) | `arm64-v8a, armeabi-v7a, x86_64` | [Descargar .apk](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-android-universal.apk) |
 | **Windows** | Instalador Setup (`.exe`) | `x86_64` | [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.0.0) |
 
 ---
