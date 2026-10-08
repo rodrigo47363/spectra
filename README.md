@@ -17,7 +17,7 @@
 
 <br/>
 
-[🚀 Descargas](#-descargas-y-binarios) • [⚖️ Comparativa](#%EF%B8%8F-manifiesto-y-comparativa-t%C3%A9cnica) • [✨ Características](#-caracter%C3%ADsticas-de-grado-operativo) • [📱 Vista Previa](#-interfaz-en-acci%C3%B3n) • [🏗️ Arquitectura](#%EF%B8%8F-arquitectura-del-sistema) • [⚙️ Optimización](#%EF%B8%8F-optimizaci%C3%B3n-y-ajustes-de-rendimiento) • [🛠️ Compilación](#-compilaci%C3%B3n-desde-fuente) • [❓ FAQ](#-preguntas-frecuentes-faq) • [👨‍💻 Autor](#-arquitecto-y-desarrollo)
+[🚀 Descargas](#descargas-y-binarios) • [⚖️ Comparativa](#manifiesto-y-comparativa-técnica) • [✨ Características](#características-de-grado-operativo) • [📱 Vista Previa](#interfaz-en-acción) • [🏗️ Arquitectura](#arquitectura-del-sistema) • [⚙️ Optimización](#optimización-y-ajustes-de-rendimiento) • [🛠️ Compilación](#compilación-desde-fuente) • [❓ FAQ](#preguntas-frecuentes-faq) • [👨‍💻 Autor](#arquitecto-y-desarrollo)
 
 <br/>
 
@@ -29,15 +29,19 @@
 
 <div align="center">
 
-### Experiencia Móvil Adaptativa (Android)
+<img src="assets/branding/spectra-showcase.jpg" alt="Spectra Flagship Showcase" width="900" />
+
+<br/><br/>
+
+### Ecosistema Móvil (Android)
 <img src="assets/branding/mobile-screenshots/combined.jpg" alt="Spectra Mobile Ecosystem" width="900" />
 
 <br/><br/>
 
 ### Experiencia de Escritorio (Linux / Windows)
-<img src="assets/branding/spotube-screenshot.png" alt="Spectra Desktop Interface" width="900" />
+<img src="assets/branding/spectra-desktop-screenshot.png" alt="Spectra Desktop Interface" width="900" />
 
-*Interfaz moderna minimalista inspirada en Shadcn UI: extracción cromática adaptativa en tiempo real basada en la portada del álbum.*
+*Interfaz moderna inspirada en Shadcn UI: extracción cromática adaptativa en tiempo real derivada de la carátula del álbum.*
 
 </div>
 
