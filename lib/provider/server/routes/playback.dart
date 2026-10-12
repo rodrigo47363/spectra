@@ -190,22 +190,57 @@ class ServerPlaybackRoutes {
     final trackCacheFile = File(await _getTrackCacheFilePath(track));
 
     if (await trackCacheFile.exists() && userPreferences.cacheMusic) {
-      final bytes = await trackCacheFile.readAsBytes();
-      final cachedFileLength = bytes.length;
+      final fileLength = await trackCacheFile.length();
+      final mimeType = track.qualityPreset?.getFileExtension() ?? "mp4";
 
-      return dio_lib.Response<Uint8List>(
+      final rangeHeader = headers["range"] ?? headers["Range"];
+      if (rangeHeader != null && rangeHeader is String && rangeHeader.startsWith("bytes=")) {
+        final parts = rangeHeader.replaceFirst("bytes=", "").split("-");
+        final start = int.tryParse(parts[0]) ?? 0;
+        final end = parts.length > 1 && parts[1].isNotEmpty
+            ? (int.tryParse(parts[1]) ?? fileLength - 1)
+            : fileLength - 1;
+        final chunkLength = (end - start + 1).clamp(0, fileLength);
+
+        return dio_lib.Response<ResponseBody>(
+          statusCode: 206,
+          headers: Headers.fromMap({
+            "content-type": ["audio/$mimeType"],
+            "content-length": ["$chunkLength"],
+            "accept-ranges": ["bytes"],
+            "content-range": ["bytes $start-$end/$fileLength"],
+            "connection": ["keep-alive"],
+          }),
+          requestOptions: RequestOptions(path: request.requestedUri.toString()),
+          data: ResponseBody(
+            trackCacheFile.openRead(start, end + 1).cast<Uint8List>(),
+            206,
+            headers: {
+              "content-type": ["audio/$mimeType"],
+              "content-length": ["$chunkLength"],
+            },
+          ),
+        );
+      }
+
+      return dio_lib.Response<ResponseBody>(
         statusCode: 200,
         headers: Headers.fromMap({
-          "content-type": ["audio/${track.qualityPreset!.name}"],
-          "content-length": ["${cachedFileLength - 1}"],
+          "content-type": ["audio/$mimeType"],
+          "content-length": ["$fileLength"],
           "accept-ranges": ["bytes"],
-          "content-range": [
-            "bytes 0-${cachedFileLength - 1}/$cachedFileLength"
-          ],
-          "connection": ["close"],
+          "content-range": ["bytes 0-${fileLength - 1}/$fileLength"],
+          "connection": ["keep-alive"],
         }),
         requestOptions: RequestOptions(path: request.requestedUri.toString()),
-        data: bytes,
+        data: ResponseBody(
+          trackCacheFile.openRead().cast<Uint8List>(),
+          200,
+          headers: {
+            "content-type": ["audio/$mimeType"],
+            "content-length": ["$fileLength"],
+          },
+        ),
       );
     }
 
@@ -308,19 +343,26 @@ class ServerPlaybackRoutes {
       return res;
     }
 
-    final resStream = res.data!.stream.asBroadcastStream();
-
-    final trackPartialCacheFile = File("${trackCacheFile.path}.part");
-    if (!await trackPartialCacheFile.exists()) {
-      await trackPartialCacheFile.create(recursive: true);
-    }
-
-    // Write the stream to the file based on the range
-    final partialCacheFileSink =
-        trackPartialCacheFile.openWrite(mode: FileMode.writeOnlyAppend);
     final contentRange = res.headers.value("content-range") != null
         ? ContentRangeHeader.parse(res.headers.value("content-range") ?? "")
         : ContentRangeHeader(0, 0, 0);
+
+    // If stream is not sequential from byte 0, bypass cache write to prevent file corruption
+    if (contentRange.start != 0) {
+      return res;
+    }
+
+    final resStream = res.data!.stream.asBroadcastStream();
+
+    final trackPartialCacheFile = File("${trackCacheFile.path}.part");
+    if (await trackPartialCacheFile.exists()) {
+      await trackPartialCacheFile.delete();
+    }
+    await trackPartialCacheFile.create(recursive: true);
+
+    // Write the stream to the file
+    final partialCacheFileSink =
+        trackPartialCacheFile.openWrite(mode: FileMode.write);
 
     resStream.listen(
       (data) {

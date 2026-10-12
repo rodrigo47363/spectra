@@ -95,6 +95,8 @@ final localTracksProvider =
         }
       }
 
+      final tempDir = await getTemporaryDirectory();
+
       final List<MetadataFile> filesWithMetadata = await Future.wait(
         entities.map((file) async {
           try {
@@ -103,22 +105,29 @@ final localTracksProvider =
 
             final imageFile = File(
               join(
-                (await getTemporaryDirectory()).path,
+                tempDir.path,
                 "spectra",
                 ServiceUtils.sanitizeFilename(
                         basenameWithoutExtension(file.path)) +
                     ext,
               ),
             );
-            if (!await imageFile.exists() && metadata.picture != null) {
-              await imageFile.create(recursive: true);
-              await imageFile.writeAsBytes(
-                metadata.picture?.data ?? [],
-                mode: FileMode.writeOnly,
-              );
+
+            String? artPath;
+            if (metadata.picture != null) {
+              if (!await imageFile.exists()) {
+                await imageFile.create(recursive: true);
+                await imageFile.writeAsBytes(
+                  metadata.picture!.data,
+                  mode: FileMode.writeOnly,
+                );
+              }
+              artPath = imageFile.path;
+            } else if (await imageFile.exists()) {
+              artPath = imageFile.path;
             }
 
-            return (metadata: metadata, file: file, art: imageFile.path);
+            return (metadata: metadata, file: file, art: artPath);
           } catch (e, stack) {
             if (e case FrbException() || TimeoutException()) {
               return (file: file, metadata: null, art: null);

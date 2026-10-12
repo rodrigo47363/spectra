@@ -86,23 +86,31 @@ class IsolatedYoutubeExplode {
       }
 
       // Run the requested method on YoutubeExplode
-      var result = switch (methodName) {
-        "search" => youtubeExplode.search
-            .search(
+      try {
+        final dynamic result = switch (methodName) {
+          "search" => await youtubeExplode.search
+              .search(
+                arguments[0] as String,
+                filter: arguments.elementAtOrNull(1) ?? TypeFilters.video,
+              )
+              .then((s) => s.toList()),
+          "video" => await youtubeExplode.videos.get(arguments[0] as String),
+          "manifest" => await youtubeExplode.videos.streamsClient.getManifest(
               arguments[0] as String,
-              filter: arguments.elementAtOrNull(1) ?? TypeFilters.video,
-            )
-            .then((s) => s.toList()),
-        "video" => youtubeExplode.videos.get(arguments[0] as String),
-        "manifest" => youtubeExplode.videos.streamsClient.getManifest(
-            arguments[0] as String,
-            requireWatchPage: arguments.elementAtOrNull(1) ?? true,
-            ytClients: arguments.elementAtOrNull(2) as List<YoutubeApiClient>?,
-          ),
-        _ => throw ArgumentError('Invalid method name: $methodName'),
-      };
+              requireWatchPage: arguments.elementAtOrNull(1) ?? true,
+              ytClients: arguments.elementAtOrNull(2) as List<YoutubeApiClient>?,
+            ),
+          _ => throw ArgumentError('Invalid method name: $methodName'),
+        };
 
-      replyPort.send(await result);
+        replyPort.send({'success': true, 'data': result});
+      } catch (e, stackTrace) {
+        replyPort.send({
+          'success': false,
+          'error': e.toString(),
+          'stackTrace': stackTrace.toString(),
+        });
+      }
     });
   }
 
@@ -111,8 +119,17 @@ class IsolatedYoutubeExplode {
     final responsePort = ReceivePort();
 
     responsePort.listen((message) {
-      completer.complete(message as T);
       responsePort.close();
+      if (message is Map && message['success'] == true) {
+        completer.complete(message['data'] as T);
+      } else if (message is Map && message['success'] == false) {
+        completer.completeError(
+          Exception(message['error'] ?? 'Unknown isolate error'),
+          StackTrace.fromString(message['stackTrace'] ?? ''),
+        );
+      } else {
+        completer.complete(message as T);
+      }
     });
 
     _sendPort.send([responsePort.sendPort, methodName, args]);
@@ -145,11 +162,13 @@ class IsolatedYoutubeExplode {
   void dispose() {
     _receivePort.close();
     _isolate.kill(priority: Isolate.immediate);
+    _instance = null;
   }
 }
 
 class YouTubeExplodeEngine implements YouTubeEngine {
-  static final _youtubeExplode = IsolatedYoutubeExplode.instance;
+  IsolatedYoutubeExplode get _youtubeExplode =>
+      IsolatedYoutubeExplode.instance;
 
   static bool get isAvailableForPlatform => true;
 
@@ -278,6 +297,8 @@ class YouTubeExplodeEngine implements YouTubeEngine {
 
   @override
   void dispose() {
-    IsolatedYoutubeExplode.instance.dispose();
+    if (IsolatedYoutubeExplode.isInitialized) {
+      IsolatedYoutubeExplode.instance.dispose();
+    }
   }
 }

@@ -27,15 +27,10 @@ extension _WebsocketSinkExts on WebSocketSink {
 class ServerConnectRoutes {
   final Ref ref;
   final StreamController<String> _connectClientStreamController;
-  final List<StreamSubscription> subscriptions;
   ServerConnectRoutes(this.ref)
-      : _connectClientStreamController = StreamController<String>.broadcast(),
-        subscriptions = [] {
+      : _connectClientStreamController = StreamController<String>.broadcast() {
     ref.onDispose(() {
       _connectClientStreamController.close();
-      for (final subscription in subscriptions) {
-        subscription.cancel();
-      }
     });
   }
 
@@ -56,12 +51,13 @@ class ServerConnectRoutes {
       ) async {
         final context =
             (req.context["shelf.io.connection_info"] as HttpConnectionInfo?);
-        final origin = "${context?.remoteAddress.host}:${context?.remotePort}";
+        final clientHost = context?.remoteAddress.address ?? "unknown";
+        final origin = "${context?.remoteAddress.host ?? clientHost}:${context?.remotePort ?? 0}";
         _connectClientStreamController.add(origin);
 
-        // Confirm whether user allows to connect
+        // Confirm whether user allows to connect (by client host)
         if (rootNavigatorKey.currentContext?.mounted == true &&
-            _allowedConnections.contains(origin) == false) {
+            _allowedConnections.contains(clientHost) == false) {
           final confirmed = await showDialog<bool>(
                 context: rootNavigatorKey.currentContext!,
                 builder: (context) {
@@ -90,7 +86,7 @@ class ServerConnectRoutes {
               false;
 
           if (confirmed) {
-            _allowedConnections.add(origin);
+            _allowedConnections.add(clientHost);
           } else {
             channel.sink.addEvent(
               WebSocketErrorEvent("Connection denied"),
@@ -100,55 +96,72 @@ class ServerConnectRoutes {
           }
         }
 
-        ref.listen(
+        final clientSubscriptions = <StreamSubscription>[];
+        var isClosed = false;
+
+        void safeSend(WebSocketEvent event) {
+          if (!isClosed) {
+            try {
+              channel.sink.addEvent(event);
+            } catch (_) {}
+          }
+        }
+
+        final audioPlayerSub = ref.listen(
           audioPlayerProvider,
           (previous, next) {
-            channel.sink.addEvent(WebSocketQueueEvent(next));
+            safeSend(WebSocketQueueEvent(next));
           },
           fireImmediately: true,
         );
 
         // because audioPlayer events doesn't fireImmediately
-        channel.sink.addEvent(WebSocketPlayingEvent(audioPlayer.isPlaying));
-        channel.sink.addEvent(
-          WebSocketPositionEvent(audioPlayer.position),
-        );
-        channel.sink.addEvent(
-          WebSocketDurationEvent(audioPlayer.duration),
-        );
-        channel.sink.addEvent(WebSocketShuffleEvent(audioPlayer.isShuffled));
-        channel.sink.addEvent(WebSocketLoopEvent(audioPlayer.loopMode));
-        channel.sink.addEvent(WebSocketVolumeEvent(audioPlayer.volume));
+        safeSend(WebSocketPlayingEvent(audioPlayer.isPlaying));
+        safeSend(WebSocketPositionEvent(audioPlayer.position));
+        safeSend(WebSocketDurationEvent(audioPlayer.duration));
+        safeSend(WebSocketShuffleEvent(audioPlayer.isShuffled));
+        safeSend(WebSocketLoopEvent(audioPlayer.loopMode));
+        safeSend(WebSocketVolumeEvent(audioPlayer.volume));
 
-        subscriptions.addAll([
+        Future<void> cleanup() async {
+          if (isClosed) return;
+          isClosed = true;
+          audioPlayerSub.close();
+          for (final sub in clientSubscriptions) {
+            await sub.cancel();
+          }
+          clientSubscriptions.clear();
+        }
+
+        clientSubscriptions.addAll([
           audioPlayer.positionStream.listen(
             (position) {
-              channel.sink.addEvent(WebSocketPositionEvent(position));
+              safeSend(WebSocketPositionEvent(position));
             },
           ),
           audioPlayer.playingStream.listen(
             (playing) {
-              channel.sink.addEvent(WebSocketPlayingEvent(playing));
+              safeSend(WebSocketPlayingEvent(playing));
             },
           ),
           audioPlayer.durationStream.listen(
             (duration) {
-              channel.sink.addEvent(WebSocketDurationEvent(duration));
+              safeSend(WebSocketDurationEvent(duration));
             },
           ),
           audioPlayer.shuffledStream.listen(
             (shuffled) {
-              channel.sink.addEvent(WebSocketShuffleEvent(shuffled));
+              safeSend(WebSocketShuffleEvent(shuffled));
             },
           ),
           audioPlayer.loopModeStream.listen(
             (loopMode) {
-              channel.sink.addEvent(WebSocketLoopEvent(loopMode));
+              safeSend(WebSocketLoopEvent(loopMode));
             },
           ),
           audioPlayer.volumeStream.listen(
             (volume) {
-              channel.sink.addEvent(WebSocketVolumeEvent(volume));
+              safeSend(WebSocketVolumeEvent(volume));
             },
           ),
           channel.stream.listen(
@@ -171,7 +184,7 @@ class ServerConnectRoutes {
                   if (event.data.collection is SpotubeSimpleAlbumObject) {
                     historyNotifier.addAlbums(
                         [event.data.collection as SpotubeSimpleAlbumObject]);
-                  } else {
+                  } else if (event.data.collection is SpotubeSimplePlaylistObject) {
                     historyNotifier.addPlaylists(
                         [event.data.collection as SpotubeSimplePlaylistObject]);
                   }
@@ -233,11 +246,16 @@ class ServerConnectRoutes {
                 });
               } catch (e, stackTrace) {
                 AppLogger.reportError(e, stackTrace);
-                channel.sink.addEvent(WebSocketErrorEvent(e.toString()));
+                safeSend(WebSocketErrorEvent(e.toString()));
               }
             },
-            onDone: () {
+            onDone: () async {
               AppLogger.log.i('Connection closed');
+              await cleanup();
+            },
+            onError: (e, stackTrace) async {
+              AppLogger.reportError(e, stackTrace);
+              await cleanup();
             },
           ),
         ]);

@@ -26,7 +26,9 @@ final _loggingToLoggerLevel = {
 
 class AppLogger {
   static late final Logger log;
-  static late final File logFile;
+  static File? _logFile;
+  static File get logFile => _logFile!;
+  static set logFile(File file) => _logFile = file;
 
   static initialize(bool verbose) {
     log = Logger(
@@ -119,25 +121,25 @@ class AppLogger {
     log.e(message, error: error, stackTrace: stackTrace);
 
     if (kReleaseMode) {
-      await logFile.writeAsString(
-        "[${DateTime.now()}]---------------------\n"
-        "$error\n$stackTrace\n"
-        "----------------------------------------\n",
-        mode: FileMode.writeOnlyAppend,
-      );
+      try {
+        final targetFile = _logFile ?? await getLogsPath();
+        _logFile = targetFile;
+        await targetFile.writeAsString(
+          "[${DateTime.now()}]---------------------\n"
+          "$error\n$stackTrace\n"
+          "----------------------------------------\n",
+          mode: FileMode.writeOnlyAppend,
+        );
+      } catch (e) {
+        debugPrint("Failed to write to logFile: $e");
+      }
     }
   }
 
   static String _getXdgStateHome() {
-    // path_provider seems does not support XDG_STATE_HOME,
-    // which is the specification to store application logs on Linux.
-    // See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-    // TODO: Use path_provider once it supports XDG_STATE_HOME
-    if (const bool.hasEnvironment("XDG_STATE_HOME")) {
-      String xdgStateHomeRaw = Platform.environment["XDG_STATE_HOME"] ?? "";
-      if (xdgStateHomeRaw.isNotEmpty) {
-        return xdgStateHomeRaw;
-      }
+    final xdgState = Platform.environment["XDG_STATE_HOME"];
+    if (xdgState != null && xdgState.isNotEmpty) {
+      return xdgState;
     }
     return join(Platform.environment["HOME"] ?? "", ".local", "state");
   }

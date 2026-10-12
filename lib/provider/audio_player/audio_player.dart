@@ -72,13 +72,14 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         ),
       );
     } else if (tracks.isNotEmpty) {
+      final safeIndex = currentIndex.clamp(0, tracks.length - 1);
       state = state.copyWith(
         tracks: tracks,
-        currentIndex: currentIndex,
+        currentIndex: safeIndex,
       );
       await audioPlayer.openPlaylist(
         tracks.asMediaList(),
-        initialIndex: currentIndex,
+        initialIndex: safeIndex,
         autoPlay: false,
       );
     }
@@ -222,7 +223,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     bool allowDuplicates = false,
   }) async {
     _assertAllowedTracks(tracks);
-    if (state.tracks.length == 1) {
+    if (state.tracks.isEmpty || state.tracks.length == 1) {
       return addTracks(tracks);
     }
 
@@ -235,8 +236,15 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         )
         .toList();
 
+    if (addableTracks.isEmpty) return;
+
+    final insertIndex = min(max(state.currentIndex, 0) + 1, state.tracks.length);
+
+    final updatedTracks = List<SpotubeTrackObject>.from(state.tracks)
+      ..insertAll(insertIndex, addableTracks);
+
     state = state.copyWith(
-      tracks: [...addableTracks, ...state.tracks],
+      tracks: updatedTracks,
     );
 
     for (int i = 0; i < addableTracks.length; i++) {
@@ -244,7 +252,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
       await audioPlayer.addTrackAt(
         SpotubeMedia(track),
-        max(state.currentIndex, 0) + i + 1,
+        insertIndex + i,
       );
     }
 
@@ -316,19 +324,23 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   }
 
   Future<void> removeTracks(Iterable<String> trackIds) async {
-    final trackIndexes = state.tracks
-        .where((element) => trackIds.any((trackId) => trackId == element.id))
-        .mapIndexed((index, element) => index);
+    final trackIdSet = trackIds.toSet();
+    final sortedIndexes = state.tracks
+        .mapIndexed((index, element) => (index: index, track: element))
+        .where((item) => trackIdSet.contains(item.track.id))
+        .map((item) => item.index)
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
 
     final tracks = state.tracks.where(
-      (element) => !trackIds.contains(element.id),
+      (element) => !trackIdSet.contains(element.id),
     );
 
     state = state.copyWith(
       tracks: tracks.toList(),
     );
 
-    for (final index in trackIndexes) {
+    for (final index in sortedIndexes) {
       await audioPlayer.removeTrack(index);
     }
 
@@ -363,6 +375,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         .asMediaList()
         .unique((a, b) => a.uri == b.uri);
 
+    if (medias.isEmpty) return;
+
+    if (initialIndex < 0 || initialIndex >= medias.length) {
+      initialIndex = 0;
+    }
+
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout
     final intendedActiveTrack = medias.elementAt(initialIndex);
@@ -373,8 +391,6 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         ).future,
       );
     }
-
-    if (medias.isEmpty) return;
 
     state = state.copyWith(
       // These are filtered tracks as well

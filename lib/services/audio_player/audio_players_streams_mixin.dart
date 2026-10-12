@@ -45,9 +45,9 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
   Stream<int> percentCompletedStream(double percent) {
     return positionStream
         .asyncMap(
-          (position) async => duration == Duration.zero
+          (position) async => duration.inMilliseconds <= 0
               ? 0
-              : (position.inSeconds / duration.inSeconds * 100).toInt(),
+              : ((position.inMilliseconds / duration.inMilliseconds) * 100).clamp(0, 100).toInt(),
         )
         .where((event) => event >= percent);
   }
@@ -87,8 +87,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
   }
 
   Stream<bool> get bufferingStream {
-    // if (mkSupportedPlatform) {
-    return Stream.value(false);
+    return _mkPlayer.stream.buffering;
     // } else {
     //   return _justAudio!.playerStateStream
     //       .map(

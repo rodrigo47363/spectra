@@ -1,19 +1,25 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 
 class SleepTimerNotifier extends StateNotifier<Duration?> {
-  SleepTimerNotifier() : super(null);
-
+  final Ref ref;
   Timer? _timer;
 
+  SleepTimerNotifier(this.ref) : super(null) {
+    ref.onDispose(() {
+      _timer?.cancel();
+    });
+  }
+
   void setSleepTimer(Duration duration) {
+    _timer?.cancel();
     state = duration;
 
-    _timer = Timer(duration, () {
-      //! This can be a reason  for app termination in iOS AppStore
-      exit(0);
+    _timer = Timer(duration, () async {
+      state = null;
+      await audioPlayer.pause();
     });
   }
 
@@ -24,5 +30,5 @@ class SleepTimerNotifier extends StateNotifier<Duration?> {
 }
 
 final sleepTimerProvider = StateNotifierProvider<SleepTimerNotifier, Duration?>(
-  (ref) => SleepTimerNotifier(),
+  (ref) => SleepTimerNotifier(ref),
 );

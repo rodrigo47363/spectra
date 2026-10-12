@@ -27,7 +27,7 @@ class SyncedLyricsNotifier
         host: "lrclib.net",
         path: "/api/get",
         queryParameters: {
-          "artist_name": _track.artists.first.name,
+          "artist_name": _track.artists.firstOrNull?.name ?? "",
           "track_name": _track.name,
           "album_name": _track.album.name,
           if (_track.durationMs > 0)
@@ -73,10 +73,13 @@ class SyncedLyricsNotifier
       );
     }
 
-    final plainLyrics = (json["plainLyrics"] as String)
-        .split("\n")
-        .map((line) => LyricSlice(text: line, time: Duration.zero))
-        .toList();
+    final plainLyricsRaw = json["plainLyrics"] as String?;
+    final plainLyrics = plainLyricsRaw != null && plainLyricsRaw.isNotEmpty
+        ? plainLyricsRaw
+            .split("\n")
+            .map((line) => LyricSlice(text: line, time: Duration.zero))
+            .toList()
+        : <LyricSlice>[];
 
     return SubtitleSimple(
       lyrics: plainLyrics,
@@ -145,9 +148,15 @@ final syncedLyricsMapProvider =
   final isStaticLyrics =
       syncedLyrics.lyrics.every((l) => l.time == Duration.zero);
 
-  final lyricsMap = syncedLyrics.lyrics
-      .map((lyric) => {lyric.time.inSeconds: lyric.text})
-      .reduce((accumulator, lyricSlice) => {...accumulator, ...lyricSlice});
+  final lyricsMap = <int, String>{};
+  for (final lyric in syncedLyrics.lyrics) {
+    final sec = lyric.time.inSeconds;
+    if (lyricsMap.containsKey(sec)) {
+      lyricsMap[sec] = "${lyricsMap[sec]}\n${lyric.text}";
+    } else {
+      lyricsMap[sec] = lyric.text;
+    }
+  }
 
   return (static: isStaticLyrics, lyricsMap: lyricsMap);
 });

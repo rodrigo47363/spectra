@@ -1,6 +1,7 @@
 enum MetadataPluginErrorCode {
   pluginApiVersionMismatch,
   invalidPluginConfiguration,
+  invalidPluginArchive,
   failedToGetReleaseInfo,
   noReleasesFound,
   assetUrlNotFound,
@@ -27,6 +28,11 @@ class MetadataPluginException implements Exception {
       : this._(
           'Invalid plugin configuration',
           errorCode: MetadataPluginErrorCode.invalidPluginConfiguration,
+        );
+  MetadataPluginException.invalidPluginArchive()
+      : this._(
+          'Invalid or unsafe plugin archive path detected',
+          errorCode: MetadataPluginErrorCode.invalidPluginArchive,
         );
   MetadataPluginException.failedToGetRelease()
       : this._(

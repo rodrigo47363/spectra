@@ -1,30 +1,30 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spotube/collections/spotube_icons.dart';
-
-import 'package:spotube/main.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const Spotube());
+  group('ServiceUtils Unit Tests', () {
+    test('clearArtistsOfTitle handles regex metacharacters safely', () {
+      final cleaned = ServiceUtils.clearArtistsOfTitle(
+        'Song Name Ke\$ha',
+        ['Ke\$ha'],
+      );
+      expect(cleaned, equals('Song Name'));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      final cleanedWithPlus = ServiceUtils.clearArtistsOfTitle(
+        'Baby Come On +44',
+        ['+44'],
+      );
+      expect(cleanedWithPlus, equals('Baby Come On'));
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(SpotubeIcons.add));
-    await tester.pump();
+    test('clearArtistsOfTitle handles empty artists list', () {
+      final cleaned = ServiceUtils.clearArtistsOfTitle('Only Title', []);
+      expect(cleaned, equals('Only Title'));
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('onlyContainsEnglish detection', () {
+      expect(ServiceUtils.onlyContainsEnglish('Hello World! 123'), isTrue);
+      expect(ServiceUtils.onlyContainsEnglish('日本語テスト'), isFalse);
+    });
   });
 }

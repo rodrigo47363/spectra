@@ -14,7 +14,6 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
 import 'package:spotube/services/sourced_track/exceptions.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 final officialMusicRegex = RegExp(
   r"official\s(video|audio|music\svideo|lyric\svideo|visualizer)",
@@ -90,56 +89,67 @@ class SourcedTrack extends BasicSourcedTrack {
         .get()
         .then((s) => s.firstOrNull);
 
-    if (cachedSource == null) {
-      final siblings = await fetchSiblings(ref: ref, query: query);
-      if (siblings.isEmpty) {
-        throw TrackNotFoundError(query);
-      }
-
-      await database.into(database.sourceMatchTable).insert(
-            SourceMatchTableCompanion.insert(
-              trackId: query.id,
-              sourceInfo: Value(jsonEncode(siblings.first)),
-              sourceType: sourceSlug,
-            ),
-          );
-
+    if (cachedSource != null) {
+      final item = SpotubeAudioSourceMatchObject.fromJson(
+        jsonDecode(cachedSource.sourceInfo),
+      );
       final manifest = await _fetchStreams(
-        match: siblings.first,
+        match: item,
         ref: ref,
         audioSource: audioSource,
       );
 
-      return SourcedTrack(
-        ref: ref,
-        siblings: siblings.skip(1).toList(),
-        info: siblings.first,
-        source: sourceSlug,
-        sources: manifest,
-        query: query,
-      );
+      if (manifest.isNotEmpty) {
+        final sourcedTrack = SourcedTrack(
+          ref: ref,
+          siblings: [],
+          sources: manifest,
+          info: item,
+          query: query,
+          source: sourceSlug,
+        );
+
+        AppLogger.log.i("${query.name}: ${sourcedTrack.url}");
+        return sourcedTrack;
+      }
+
+      // Cached source yielded 0 streams (likely dead or deleted video).
+      // Evict stale cache entry and proceed to fresh sibling search below.
+      await (database.sourceMatchTable.delete()
+            ..where((s) =>
+                s.trackId.equals(query.id) &
+                s.sourceType.equals(sourceSlug)))
+          .go();
     }
-    final item = SpotubeAudioSourceMatchObject.fromJson(
-      jsonDecode(cachedSource.sourceInfo),
-    );
+
+    final siblings = await fetchSiblings(ref: ref, query: query);
+    if (siblings.isEmpty) {
+      throw TrackNotFoundError(query);
+    }
+
+    await database.into(database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: query.id,
+            sourceInfo: Value(jsonEncode(siblings.first)),
+            sourceType: sourceSlug,
+          ),
+          mode: InsertMode.replace,
+        );
+
     final manifest = await _fetchStreams(
-      match: item,
+      match: siblings.first,
       ref: ref,
       audioSource: audioSource,
     );
 
-    final sourcedTrack = SourcedTrack(
+    return SourcedTrack(
       ref: ref,
-      siblings: [],
-      sources: manifest,
-      info: item,
-      query: query,
+      siblings: siblings.skip(1).toList(),
+      info: siblings.first,
       source: sourceSlug,
+      sources: manifest,
+      query: query,
     );
-
-    AppLogger.log.i("${query.name}: ${sourcedTrack.url}");
-
-    return sourcedTrack;
   }
 
   static List<SpotubeAudioSourceMatchObject> rankResults(
@@ -152,7 +162,7 @@ class SourcedTrack extends BasicSourcedTrack {
 
           for (final artist in track.artists) {
             final isSameChannelArtist =
-                sibling.artists.any((a) => a.toLowerCase() == artist.name);
+                sibling.artists.any((a) => a.toLowerCase() == artist.name.toLowerCase());
 
             if (isSameChannelArtist) {
               score += 1;
@@ -214,11 +224,7 @@ class SourcedTrack extends BasicSourcedTrack {
       final audioSource = await ref.read(audioSourcePluginProvider.future);
       if (audioSource != null) {
         final searchResults = await audioSource.audioSource.matches(query);
-        if (ServiceUtils.onlyContainsEnglish(query.name)) {
-          videoResults.addAll(searchResults);
-        } else {
-          videoResults.addAll(rankResults(searchResults, query));
-        }
+        videoResults.addAll(rankResults(searchResults, query));
       }
     } catch (e) {
       AppLogger.log.w("Failed to fetch matches from audioSource plugin: $e");
@@ -326,7 +332,9 @@ class SourcedTrack extends BasicSourcedTrack {
   }
 
   Future<SourcedTrack?> swapWithSiblingOfIndex(int index) {
-    return swapWithSibling(siblings[index]);
+    final sibling = siblings.elementAtOrNull(index);
+    if (sibling == null) return Future.value(null);
+    return swapWithSibling(sibling);
   }
 
   Future<SourcedTrack> refreshStream() async {

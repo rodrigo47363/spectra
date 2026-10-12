@@ -21,6 +21,8 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/player/player_queue_actions.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
@@ -249,12 +251,113 @@ class PlayerQueue extends HookConsumerWidget {
                           ),
                         if (!isSearching.value) ...[
                           const SizedBox(width: 10),
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final shuffled = ref.watch(
+                                audioPlayerProvider.select((s) => s.shuffled),
+                              );
+                              return Tooltip(
+                                tooltip: TooltipContainer(
+                                  child: Text(
+                                    shuffled
+                                        ? context.l10n.unshuffle_playlist
+                                        : context.l10n.shuffle_playlist,
+                                  ),
+                                ).call,
+                                child: IconButton(
+                                  icon: Icon(
+                                    SpotubeIcons.shuffle,
+                                    size: 16,
+                                    color: shuffled
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                  ),
+                                  variance: shuffled
+                                      ? ButtonVariance.secondary
+                                      : ButtonVariance.outline,
+                                  onPressed: () {
+                                    audioPlayer.setShuffle(!shuffled);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          const Gap(5),
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final endlessPlayback = ref.watch(
+                                userPreferencesProvider
+                                    .select((s) => s.endlessPlayback),
+                              );
+                              final preferencesNotifier =
+                                  ref.watch(userPreferencesProvider.notifier);
+                              return Tooltip(
+                                tooltip: TooltipContainer(
+                                  child: Text(
+                                    '${context.l10n.endless_playback}: ${endlessPlayback ? "ON" : "OFF"}',
+                                  ),
+                                ).call,
+                                child: IconButton(
+                                  icon: Icon(
+                                    SpotubeIcons.radio,
+                                    size: 16,
+                                    color: endlessPlayback
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                  ),
+                                  variance: endlessPlayback
+                                      ? ButtonVariance.secondary
+                                      : ButtonVariance.outline,
+                                  onPressed: () {
+                                    preferencesNotifier
+                                        .setEndlessPlayback(!endlessPlayback);
+                                    showToast(
+                                      context: context,
+                                      location: ToastLocation.topRight,
+                                      dismissible: true,
+                                      builder: (context, overlay) {
+                                        return SurfaceCard(
+                                          child: Text(
+                                            '${context.l10n.endless_playback}: ${!endlessPlayback ? "ON" : "OFF"}',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          const Gap(5),
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(context.l10n.add_to_playlist),
+                            ).call,
+                            child: IconButton.outline(
+                              icon: const Icon(SpotubeIcons.playlistAdd, size: 16),
+                              onPressed: () async {
+                                final fullTracks = tracks
+                                    .whereType<SpotubeFullTrackObject>()
+                                    .toList();
+                                if (fullTracks.isEmpty) return;
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => PlaylistAddTrackDialog(
+                                    tracks: fullTracks,
+                                    openFromPlaylist: null,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const Gap(5),
                           Tooltip(
                             tooltip: TooltipContainer(
                                     child: Text(context.l10n.clear_all))
                                 .call,
                             child: IconButton.outline(
-                              icon: const Icon(SpotubeIcons.playlistRemove),
+                              icon: const Icon(SpotubeIcons.playlistRemove, size: 16),
                               onPressed: () {
                                 onStop();
                                 closeDrawer(context);

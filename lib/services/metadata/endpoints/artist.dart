@@ -334,6 +334,131 @@ class MetadataPluginArtistEndpoint {
     );
   }
 
+  Future<List<SpotubeFullTrackObject>> resolveArtistOnlineTracks(
+    String artistName, {
+    int limit = 50,
+  }) async {
+    final cleanName = artistName.trim();
+    final lower = cleanName.toLowerCase();
+    if (lower.isEmpty ||
+        lower == 'unknown artist' ||
+        lower == 'artist' ||
+        lower == 'null' ||
+        lower == 'undefined') {
+      return [];
+    }
+
+    try {
+      final uri = Uri.parse(
+        'https://api.deezer.com/search/artist?q=${Uri.encodeComponent(cleanName)}&limit=25',
+      );
+      final response =
+          await http.get(uri).timeout(const Duration(seconds: 4));
+      if (response.statusCode != 200) return [];
+
+      final data = jsonDecode(response.body);
+      if (data is! Map ||
+          data['data'] is! List ||
+          (data['data'] as List).isEmpty) {
+        return [];
+      }
+
+      final items = (data['data'] as List).whereType<Map>().toList();
+      items.sort((a, b) {
+        final fanA = int.tryParse(a['nb_fan']?.toString() ?? '0') ?? 0;
+        final fanB = int.tryParse(b['nb_fan']?.toString() ?? '0') ?? 0;
+        return fanB.compareTo(fanA);
+      });
+
+      final exactMatches = items.where((it) {
+        final n = it['name']?.toString().trim().toLowerCase();
+        return n == lower;
+      }).toList();
+
+      final Map matched =
+          exactMatches.isNotEmpty ? exactMatches.first : items.first;
+
+      final dzArtistId = matched['id']?.toString();
+      final realName = matched['name']?.toString() ?? cleanName;
+      if (dzArtistId == null) return [];
+
+      final topUri = Uri.parse(
+        'https://api.deezer.com/artist/$dzArtistId/top?limit=$limit',
+      );
+      final topResponse =
+          await http.get(topUri).timeout(const Duration(seconds: 5));
+      if (topResponse.statusCode != 200) return [];
+
+      final topData = jsonDecode(topResponse.body);
+      if (topData is! Map || topData['data'] is! List) return [];
+
+      final rawTracks = (topData['data'] as List).whereType<Map>().toList();
+      final results = <SpotubeFullTrackObject>[];
+
+      for (final t in rawTracks) {
+        final tId = t['id']?.toString();
+        final tTitle = t['title']?.toString();
+        if (tId == null || tTitle == null || tTitle.isEmpty) continue;
+
+        final duration =
+            (int.tryParse(t['duration']?.toString() ?? '0') ?? 0) * 1000;
+        final albumMap = t['album'] is Map ? t['album'] as Map : null;
+        final albumId = albumMap?['id']?.toString() ?? 'dz-album-$tId';
+        final albumTitle = albumMap?['title']?.toString() ?? 'Album';
+
+        final images = <SpotubeImageObject>[];
+        for (final k in [
+          'cover_xl',
+          'cover_big',
+          'cover_medium',
+          'cover_small'
+        ]) {
+          final u = albumMap?[k]?.toString();
+          if (u != null && u.isNotEmpty) {
+            images.add(SpotubeImageObject(url: u, height: 300, width: 300));
+            break;
+          }
+        }
+
+        results.add(
+          SpotubeFullTrackObject(
+            id: 'dz-$tId',
+            name: tTitle,
+            externalUri: 'https://www.deezer.com/track/$tId',
+            durationMs: duration > 0 ? duration : 180000,
+            isrc: t['isrc']?.toString() ?? '',
+            explicit: t['explicit_lyrics'] == true,
+            artists: [
+              SpotubeSimpleArtistObject(
+                id: 'dz-$dzArtistId',
+                name: realName,
+                externalUri: 'https://www.deezer.com/artist/$dzArtistId',
+              ),
+            ],
+            album: SpotubeSimpleAlbumObject(
+              id: 'dz-$albumId',
+              name: albumTitle,
+              externalUri: 'https://www.deezer.com/album/$albumId',
+              images: images,
+              albumType: SpotubeAlbumType.album,
+              artists: [
+                SpotubeSimpleArtistObject(
+                  id: 'dz-$dzArtistId',
+                  name: realName,
+                  externalUri: 'https://www.deezer.com/artist/$dzArtistId',
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      return results;
+    } catch (_) {
+      return [];
+    }
+  }
+
   Future<SpotubePaginationResponseObject<SpotubeFullTrackObject>> topTracks(
     String id, {
     int? offset,
@@ -352,6 +477,7 @@ class MetadataPluginArtistEndpoint {
       }
     }
 
+    SpotubePaginationResponseObject<SpotubeFullTrackObject>? hetuTracks;
     try {
       final raw = await hetuMetadataArtist.invoke(
         "topTracks",
@@ -362,7 +488,8 @@ class MetadataPluginArtistEndpoint {
         }..removeWhere((key, value) => value == null),
       );
       if (raw is Map) {
-        return SpotubePaginationResponseObject<SpotubeFullTrackObject>.fromJson(
+        hetuTracks =
+            SpotubePaginationResponseObject<SpotubeFullTrackObject>.fromJson(
           raw.cast<String, dynamic>(),
           (Map json) => SpotubeFullTrackObject.fromJson(
             json.cast<String, dynamic>(),
@@ -371,9 +498,60 @@ class MetadataPluginArtistEndpoint {
       }
     } catch (_) {}
 
+    final existingItems =
+        hetuTracks?.items.toList() ?? <SpotubeFullTrackObject>[];
+
+    // Si Hetu devolvió pocas canciones (< 10), enriquecemos con el catálogo online
+    if (existingItems.length < 10) {
+      String? artistName;
+      if (existingItems.isNotEmpty &&
+          existingItems.first.artists.isNotEmpty &&
+          existingItems.first.artists.first.name.isNotEmpty &&
+          existingItems.first.artists.first.name != 'Artist') {
+        artistName = existingItems.first.artists.first.name;
+      }
+
+      if (artistName == null) {
+        try {
+          final artist = await _fetchFromHetu(queryId);
+          if (artist != null &&
+              artist.name.isNotEmpty &&
+              artist.name != 'Artist' &&
+              artist.name != 'Unknown Artist') {
+            artistName = artist.name;
+          }
+        } catch (_) {}
+      }
+
+      if (artistName != null && artistName.isNotEmpty) {
+        final onlineTracks = await resolveArtistOnlineTracks(
+          artistName,
+          limit: limit ?? 30,
+        );
+
+        if (onlineTracks.isNotEmpty) {
+          final normalizedTitles = existingItems
+              .map((t) => t.name
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^a-z0-9]'), ''))
+              .toSet();
+
+          for (final t in onlineTracks) {
+            final norm = t.name
+                .toLowerCase()
+                .replaceAll(RegExp(r'[^a-z0-9]'), '');
+            if (norm.isNotEmpty && !normalizedTitles.contains(norm)) {
+              normalizedTitles.add(norm);
+              existingItems.add(t);
+            }
+          }
+        }
+      }
+    }
+
     return SpotubePaginationResponseObject<SpotubeFullTrackObject>(
-      items: [],
-      total: 0,
+      items: existingItems,
+      total: existingItems.length,
       limit: limit ?? 20,
       hasMore: false,
       nextOffset: null,

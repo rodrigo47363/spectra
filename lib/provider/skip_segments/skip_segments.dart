@@ -52,14 +52,19 @@ Future<List<SkipSegmentTableData>> getAndCacheSkipSegments(
       ),
     );
 
-    if (res.data == "Not Found") {
-      return List.castFrom<dynamic, SkipSegmentTableData>([]);
+    if (res.statusCode != 200 || res.data is! List) {
+      return <SkipSegmentTableData>[];
     }
 
     final data = res.data as List;
+    if (data.isEmpty) {
+      return <SkipSegmentTableData>[];
+    }
+
     final segments = data.map((obj) {
-      final start = obj["segment"].first.toInt();
-      final end = obj["segment"].last.toInt();
+      final segmentList = obj["segment"] as List?;
+      final start = (segmentList?.firstOrNull as num?)?.toInt() ?? 0;
+      final end = (segmentList?.lastOrNull as num?)?.toInt() ?? 0;
       return SkipSegmentTableCompanion.insert(
         trackId: id,
         start: start,
@@ -76,7 +81,7 @@ Future<List<SkipSegmentTableData>> getAndCacheSkipSegments(
         .get();
   } catch (e, stack) {
     AppLogger.reportError(e, stack);
-    return List.castFrom<dynamic, SkipSegmentTableData>([]);
+    return <SkipSegmentTableData>[];
   }
 }
 
@@ -86,7 +91,7 @@ final segmentProvider = FutureProvider<SourcedSegments?>(
     if (snapshot == null) return null;
     final (:track, :source, :notifier) = snapshot;
     if (track is SpotubeLocalTrackObject) return null;
-    if (!source!.source.toLowerCase().contains("youtube")) return null;
+    if (source == null || !source.source.toLowerCase().contains("youtube")) return null;
 
     final skipNonMusic =
         ref.watch(userPreferencesProvider.select((s) => s.skipNonMusic));

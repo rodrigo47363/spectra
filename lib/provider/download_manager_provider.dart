@@ -144,7 +144,7 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
   void _setStatus(SpotubeFullTrackObject track, DownloadStatus status) {
     state = state.map((e) {
       if (e.track.id == track.id) {
-        if ((status == DownloadStatus.canceled) && e.cancelToken.isCancelled) {
+        if ((status == DownloadStatus.canceled) && !e.cancelToken.isCancelled) {
           e.cancelToken.cancel();
         }
 
@@ -182,6 +182,7 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
       final track = await ref.read(sourcedTrackProvider(task.track).future);
       if (task.cancelToken.isCancelled) {
         _setStatus(task.track, DownloadStatus.canceled);
+        return;
       }
       final presets = ref.read(audioSourcePresetsProvider);
       final container =
@@ -197,6 +198,8 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
       if (url == null) {
         throw Exception("No download URL found for selected codec");
       }
+
+      await Directory(downloadLocation).create(recursive: true);
 
       final savePath = join(
         downloadLocation,
@@ -241,19 +244,23 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
 
       if (container.getFileExtension() == "weba") return;
 
-      final imageBytes = await ServiceUtils.downloadImage(
-        (task.track.album.images).asUrlString(
-          placeholder: ImagePlaceholder.albumArt,
-          index: 1,
-        ),
-      );
-      await MetadataGod.writeMetadata(
-        file: savePath,
-        metadata: task.track.toMetadata(
-          fileLength: await savePathFile.length(),
-          imageBytes: imageBytes,
-        ),
-      );
+      try {
+        final imageBytes = await ServiceUtils.downloadImage(
+          (task.track.album.images).asUrlString(
+            placeholder: ImagePlaceholder.albumArt,
+            index: 1,
+          ),
+        );
+        await MetadataGod.writeMetadata(
+          file: savePath,
+          metadata: task.track.toMetadata(
+            fileLength: await savePathFile.length(),
+            imageBytes: imageBytes,
+          ),
+        );
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
+      }
     } catch (e, stack) {
       if (e is! DioException || e.type != DioExceptionType.cancel) {
         _setStatus(task.track, DownloadStatus.failed);
@@ -262,19 +269,28 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
     }
   }
 
-  Future<void> _startDownloading() async {
-    for (final task in state) {
-      if (task.status == DownloadStatus.downloading) return;
+  bool _isProcessingQueue = false;
 
-      if (task.status == DownloadStatus.queued) {
+  Future<void> _startDownloading() async {
+    if (_isProcessingQueue) return;
+    _isProcessingQueue = true;
+
+    try {
+      while (true) {
+        final nextTask = state.firstWhereOrNull(
+          (t) => t.status == DownloadStatus.queued,
+        );
+
+        if (nextTask == null) break;
+
         try {
-          await _downloadTrack(task);
-        } finally {
-          // After completion, check for more queued tasks
-          // Ignore errors of the prior task to allow next task to complete
-          await _startDownloading();
+          await _downloadTrack(nextTask);
+        } catch (_) {
+          // Continue to next task on error
         }
       }
+    } finally {
+      _isProcessingQueue = false;
     }
   }
 }

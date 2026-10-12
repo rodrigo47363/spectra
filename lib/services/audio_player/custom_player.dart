@@ -118,6 +118,7 @@ class CustomPlayer extends Player {
       element.cancel();
     }
     await notifyAudioSessionUpdate(false);
+    await _playerStateStream.close();
     return super.dispose();
   }
 

@@ -154,7 +154,7 @@ class TrackOptions extends HookConsumerWidget {
                   : context.l10n.save_as_favorite,
             ),
           ),
-        if (isAuthenticated && !isLocalTrack) ...[
+        if (!isLocalTrack)
           ButtonTile(
             style: ButtonVariance.menu,
             onPressed: () async {
@@ -168,6 +168,7 @@ class TrackOptions extends HookConsumerWidget {
             leading: const Icon(SpotubeIcons.radio),
             title: Text(context.l10n.start_a_radio),
           ),
+        if (isAuthenticated && !isLocalTrack)
           ButtonTile(
             style: ButtonVariance.menu,
             onPressed: () async {
@@ -181,7 +182,6 @@ class TrackOptions extends HookConsumerWidget {
             leading: const Icon(SpotubeIcons.playlistAdd),
             title: Text(context.l10n.add_to_playlist),
           ),
-        ],
         if (userPlaylist && isAuthenticated && !isLocalTrack)
           ButtonTile(
             style: ButtonVariance.menu,

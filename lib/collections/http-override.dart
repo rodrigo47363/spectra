@@ -10,7 +10,7 @@ class BadCertificateAllowlistOverrides extends HttpOverrides {
     return super.createHttpClient(context)
       ..badCertificateCallback = (X509Certificate cert, String host, int port) {
         return allowList.any((allowedHost) {
-          return host.endsWith(allowedHost);
+          return host == allowedHost || host.endsWith(".$allowedHost");
         });
       };
   }

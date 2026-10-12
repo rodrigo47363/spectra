@@ -8,7 +8,7 @@
 
 <br/>
 
-[![Release](https://img.shields.io/badge/Release-v1.0.0-00E5FF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rodrigo47363/spectra/releases)
+[![Release](https://img.shields.io/badge/Release-v1.1.0-00E5FF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rodrigo47363/spectra/releases)
 [![License](https://img.shields.io/badge/License-BSD--4--Clause-0A84FF?style=for-the-badge)](LICENSE)
 [![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20Linux%20%7C%20Windows-30D158?style=for-the-badge)](#-descargas-y-binarios)
 [![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero%20%2F%20No%20Tracking-FF453A?style=for-the-badge)](PRIVACY_POLICY.md)
@@ -78,31 +78,33 @@ Binarios oficiales firmados, listos para producción y libres de intermediarios:
 
 | Plataforma | Arquitectura | Formato de Paquete | Enlace de Descarga Directa |
 | :--- | :---: | :---: | :--- |
+| **Linux (Debian/Ubuntu/Mint/Parrot)** | `x86_64 / amd64` | Paquete `.deb` | [📥 **Descargar Spectra-v1.1.0.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.deb) |
+| **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.xz`) | [📥 **Descargar Bundle (.tar.xz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/spectra-linux-1.1.0-x86_64.tar.xz) |
+| **Linux (Universal)** | `x86_64 / amd64` | Tarball Estándar (`.tar.gz`) | [📥 **Descargar Bundle (.tar.gz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.tar.gz) |
 | **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar Spectra-v1.0.0.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-android-universal.apk) |
-| **Linux (Debian/Ubuntu/Mint/Parrot)** | `x86_64 / amd64` | Paquete `.deb` | [📥 **Descargar Spectra-v1.0.0.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.deb) |
-| **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.gz`) | [📥 **Descargar Bundle Portable**](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.tar.gz) |
-| **Windows 10 / 11** | `x86_64` | Instalador / CLI | [🛠️ **Compilar vía CLI**](#3-entorno-windows) • [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.0.0) |
+| **Windows 10 / 11** | `x86_64` | Instalador / CLI | [🛠️ **Compilar vía CLI**](#3-entorno-windows) • [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0) |
 
 <details>
 <summary><b>🔐 Verificación Criptográfica de Integridad (SHA-256)</b></summary>
 <br/>
 
-Para garantizar que los binarios no han sido alterados en tránsito, verifica sus firmas hash contra el archivo oficial [`SHA256SUMS.txt`](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/SHA256SUMS.txt):
+Para garantizar que los binarios no han sido alterados en tránsito, verifica sus firmas hash contra el archivo oficial [`SHA256SUMS.txt`](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/SHA256SUMS.txt):
 
 ```bash
 # Descargar archivo de firmas y verificar automáticamente
-curl -sLO https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/SHA256SUMS.txt
+curl -sLO https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/SHA256SUMS.txt
 sha256sum --check SHA256SUMS.txt --ignore-missing
 ```
 
 | Archivo | Hash SHA-256 Oficial |
 | :--- | :--- |
+| `Spectra-v1.1.0-linux-x86_64.deb` | `329e0efe59515533b0b9abecfcf9b99f6a4a2d7887f806b11704a8e5d97eb03f` |
+| `spectra-linux-1.1.0-x86_64.tar.xz` | `6951433b5885c89038950f4cad336526524bc7716725bab7532f667ef54f0d82` |
+| `Spectra-v1.1.0-linux-x86_64.tar.gz` | `40bec88b628d1b0970b1f746ff9a002eaeedf612bf32234827dd1f2ff02e8871` |
 | `Spectra-v1.0.0-android-universal.apk` | `d765babbab3fa0f178205bcbff70c8c63a47045e0db590e54b2d1d5cdd4e706a` |
-| `Spectra-v1.0.0-linux-x86_64.deb` | `cc1ab158a6b8432af407a7d1f9ad8f9d82600aa22a34f4b17e4f5363f15590f0` |
-| `Spectra-v1.0.0-linux-x86_64.tar.gz` | `ef528bfa3035adb15a2988be0752f32e3b835afbaeb300c368f9e46447d8e3ea` |
 </details>
 
-> 🌐 *Repositorio de binarios históricos y tags de versión: [GitHub Releases v1.0.0](https://github.com/rodrigo47363/spectra/releases/tag/v1.0.0)*
+> 🌐 *Repositorio de binarios históricos y tags de versión: [GitHub Releases v1.1.0](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0)*
 
 ---
 
@@ -126,8 +128,8 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 
 **Opción A — Vía terminal con APT:**
 ```bash
-wget https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-linux-x86_64.deb
-sudo apt install -y ./Spectra-v1.0.0-linux-x86_64.deb
+wget https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.deb
+sudo apt install -y ./Spectra-v1.1.0-linux-x86_64.deb
 ```
 
 **Opción B — Instalador inteligente multienlace (Debian, Arch, Fedora, openSUSE):**
@@ -140,7 +142,7 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
 <summary><b>💻 En Windows 10 / 11</b></summary>
 <br/>
 
-1. Consulta los binarios disponibles en [Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.0.0) o compila el instalador nativo directamente mediante el CLI del proyecto:
+1. Consulta los binarios disponibles en [Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0) o compila el instalador nativo directamente mediante el CLI del proyecto:
    ```bash
    dart run cli/cli.dart build windows
    ```
@@ -156,10 +158,13 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
 * ⚡ **Pipeline Nativo C++ (`libmpv`):** Vinculación directa mediante FFI (*Foreign Function Interface*) con las librerías dinámicas de `mpv`. Permite reproducción *bit-perfect*, control de ganancia ReplayGain y latencia de búfer inferior a 15 ms.
 * 🛡️ **Proxy Local Blindado en Loopback (`127.0.0.1`):** Servidor HTTP local embebido (*Shelf*) confinado a la interfaz local. Aísla las peticiones de streaming, elimina cabeceras que delaten el dispositivo y previene fugas de metadatos en redes públicas.
 * 🔄 **Conmutación Dual Anti-Throttling:** Soporte alternable entre motores de extracción en caliente (**NewPipe Extractor** y **YouTubeExplode**) para evadir restricciones de velocidad (*rate limiting*) en orígenes remotos.
+* 🎼 **Catálogo Completo y Discografía de Artistas (`all_tracks`):** Exploración completa de canciones y sencillos de cualquier artista sin truncamientos arbitrarios en *Top Tracks*, con paginación fluida y soporte para vista en lista y cuadrícula.
+* 🎛️ **Acciones de Reproducción Extendidas:** Controles dedicados en perfiles de artistas: *Reproducir Todo*, *Modo Aleatorio* y *Radio de Artista* para generación instantánea de colas de escucha fluidas.
+* 💡 **Experiencia Intuitiva sin Cuenta (`AnonymousFallback`):** Mensajería didáctica y sin fricción cuando no hay credenciales vinculadas, permitiendo conexión en 1 clic o navegación libre y completa en modo anónimo.
 * 📥 **Gestor de Descargas con Tagging ID3 Completo:** Descarga canciones y álbumes en alta calidad con carátulas incrustadas y metadatos estándar (título, artista, año, género, número de pista).
 * 🎤 **Letras Sincronizadas (Modo Karaoke):** Sincronización lírica dinámica y fluida en tiempo real integrada en el panel de reproducción.
 * 🎨 **Interfaz Reactiva Shadcn UI:** UI ligera basada en Flutter Hooks y Riverpod, con extracción adaptativa de paleta de colores derivada dinámicamente de cada portada musical.
-* 🗄️ **Almacenamiento Local-First Cifrado:** Base de datos relacional ultrarrápida en **SQLite con Drift ORM**. Las credenciales y claves de sesión se custodian en los almacenes cifrados nativos del sistema operativo (`libsecret` en Linux y `EncryptedSharedPreferences` con respaldo en Keystore por hardware en Android).
+* 🗄️ **Almacenamiento Local-First Cifrado (Drift ORM v10):** Base de datos relacional ultrarrápida en **SQLite con Drift ORM** probada con 58 tests de verificación y migración. Las credenciales y claves de sesión se custodian en los almacenes cifrados nativos del sistema operativo (`libsecret` en Linux y `EncryptedSharedPreferences` con respaldo en Keystore por hardware en Android).
 
 ---
 
@@ -268,7 +273,7 @@ Empaquetar instalador debian estándar:
 ```bash
 ./scripts/package_deb.sh
 ```
-*Paquete generado en:* `dist/Spectra-v1.0.0-linux-x86_64.deb`
+*Paquete generado en:* `dist/Spectra-v1.1.0-linux-x86_64.deb`
 
 ---
 

@@ -33,8 +33,10 @@ abstract class ServiceUtils {
   }
 
   static String clearArtistsOfTitle(String title, List<String> artists) {
+    if (artists.isEmpty) return title.trim();
+    final escapedPattern = artists.map(RegExp.escape).join("|");
     return title
-        .replaceAll(RegExp(artists.join("|"), caseSensitive: false), "")
+        .replaceAll(RegExp(escapedPattern, caseSensitive: false), "")
         .trim();
   }
 
@@ -210,7 +212,9 @@ abstract class ServiceUtils {
           case SortBy.duration:
             return a.durationMs.compareTo(b.durationMs);
           case SortBy.artist:
-            return a.artists.first.name.compareTo(b.artists.first.name);
+            final aArtist = a.artists.firstOrNull?.name ?? "";
+            final bArtist = b.artists.firstOrNull?.name ?? "";
+            return aArtist.compareTo(bArtist);
           case SortBy.album:
             return a.album.name.compareTo(b.album.name);
           default:
@@ -237,7 +241,7 @@ abstract class ServiceUtils {
 
       await for (final data in fileStream) {
         if (data is FileInfo) {
-          bytes.addAll(data.file.readAsBytesSync());
+          bytes.addAll(await data.file.readAsBytes());
           break;
         }
       }

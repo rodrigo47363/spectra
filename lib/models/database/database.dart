@@ -63,7 +63,7 @@ part 'typeconverters/subtitle.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
   int get schemaVersion => 10;
@@ -103,7 +103,7 @@ class AppDatabase extends _$AppDatabase {
           );
           await customStatement(
             "ALTER TABLE $tableName "
-            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Slate:0xff64748b'",
+            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Orange:0xFFf97315'",
           );
           await customStatement(
             "UPDATE $tableName "
@@ -115,7 +115,7 @@ class AppDatabase extends _$AppDatabase {
           );
           await customStatement(
             "UPDATE $tableName "
-            "SET $columnName = 'Slate:0xff64748b' WHERE $columnName = 'Blue:0xFF2196F3'",
+            "SET $columnName = 'Orange:0xFFf97315' WHERE $columnName = 'Blue:0xFF2196F3'",
           );
         },
         from5To6: (m, schema) async {
@@ -188,17 +188,24 @@ class AppDatabase extends _$AppDatabase {
               throw error;
             }
           });
-          await m
-              .addColumn(
-            schema.metadataPluginsTable,
-            schema.metadataPluginsTable.pluginApiVersion,
-          )
-              .catchError((error, stackTrace) {
-            // If the column already exists, ignore the error
+          await customStatement(
+            "ALTER TABLE metadata_plugins_table "
+            "ADD COLUMN plugin_api_version TEXT NOT NULL DEFAULT '1.0.0';",
+          ).catchError((error, stackTrace) {
             if (!error.toString().contains('duplicate column name')) {
               throw error;
             }
           });
+          await m.alterTable(
+            TableMigration(
+              schema.metadataPluginsTable,
+            ),
+          ).catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m.alterTable(
+            TableMigration(
+              schema.preferencesTable,
+            ),
+          ).catchError((e, stack) => AppLogger.reportError(e, stack));
         },
         from8To9: (m, schema) async {
           await m
@@ -217,6 +224,11 @@ class AppDatabase extends _$AppDatabase {
                 pluginsTable.selectedForAudioSource,
               )
               .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m.alterTable(
+            TableMigration(
+              schema.pluginsTable,
+            ),
+          ).catchError((e, stack) => AppLogger.reportError(e, stack));
         },
         from9To10: (m, schema) async {
           await m
@@ -226,15 +238,33 @@ class AppDatabase extends _$AppDatabase {
               .dropColumn(schema.preferencesTable, "invidious_instance")
               .catchError((e, stack) => AppLogger.reportError(e, stack));
           await m
+              .dropColumn(schema.preferencesTable, "audio_quality")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.preferencesTable, "audio_source")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.preferencesTable, "stream_music_codec")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.preferencesTable, "download_music_codec")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
               .addColumn(
-                schema.sourceMatchTable,
-                sourceMatchTable.sourceInfo,
+                schema.preferencesTable,
+                schema.preferencesTable.audioSourceId,
               )
               .catchError((e, stack) => AppLogger.reportError(e, stack));
           await customStatement("DROP INDEX IF EXISTS uniq_track_match;")
               .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m.alterTable(
+            TableMigration(
+              schema.sourceMatchTable,
+              newColumns: [schema.sourceMatchTable.sourceInfo],
+            ),
+          ).catchError((e, stack) => AppLogger.reportError(e, stack));
           await m
-              .dropColumn(schema.sourceMatchTable, "source_id")
+              .createIndex(schema.uniqTrackMatch)
               .catchError((e, stack) => AppLogger.reportError(e, stack));
         },
       ),

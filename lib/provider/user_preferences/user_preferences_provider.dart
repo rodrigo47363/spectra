@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,48 +22,52 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   @override
   build() {
     final db = ref.watch(databaseProvider);
+    StreamSubscription? subscription;
 
-    (db.select(db.preferencesTable)..where((tbl) => tbl.id.equals(0)))
-        .getSingleOrNull()
-        .then((result) async {
-      if (result == null) {
-        await db.into(db.preferencesTable).insert(
-              PreferencesTableCompanion.insert(
-                id: const Value(0),
-                downloadLocation: Value(await _getDefaultDownloadDirectory()),
-              ),
-            );
-      }
-
-      state = await (db.select(db.preferencesTable)
-            ..where((tbl) => tbl.id.equals(0)))
-          .getSingle();
-
-      final subscription = (db.select(db.preferencesTable)
-            ..where((tbl) => tbl.id.equals(0)))
-          .watchSingle()
-          .listen((event) async {
-        try {
-          state = event;
-
-          if (kIsDesktop) {
-            await windowManager.setTitleBarStyle(
-              state.systemTitleBar
-                  ? TitleBarStyle.normal
-                  : TitleBarStyle.hidden,
-            );
-          }
-
-          await audioPlayer.setAudioNormalization(state.normalizeAudio);
-        } catch (e, stack) {
-          AppLogger.reportError(e, stack);
-        }
-      });
-
-      ref.onDispose(() {
-        subscription.cancel();
-      });
+    ref.onDispose(() {
+      subscription?.cancel();
     });
+
+    () async {
+      try {
+        final result = await (db.select(db.preferencesTable)
+              ..where((tbl) => tbl.id.equals(0)))
+            .getSingleOrNull();
+
+        if (result == null) {
+          final defaultDownloadDir = await _getDefaultDownloadDirectory();
+          await db.into(db.preferencesTable).insert(
+                PreferencesTableCompanion.insert(
+                  id: const Value(0),
+                  downloadLocation: Value(defaultDownloadDir),
+                ),
+              );
+        }
+
+        subscription = (db.select(db.preferencesTable)
+              ..where((tbl) => tbl.id.equals(0)))
+            .watchSingle()
+            .listen((event) async {
+          try {
+            state = event;
+
+            if (kIsDesktop) {
+              await windowManager.setTitleBarStyle(
+                state.systemTitleBar
+                    ? TitleBarStyle.normal
+                    : TitleBarStyle.hidden,
+              );
+            }
+
+            await audioPlayer.setAudioNormalization(state.normalizeAudio);
+          } catch (e, stack) {
+            AppLogger.reportError(e, stack);
+          }
+        });
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
+      }
+    }();
 
     return PreferencesTable.defaults();
   }
@@ -70,12 +76,17 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spectra";
 
     if (kIsMacOS) {
-      return join((await paths.getLibraryDirectory()).path, "Caches");
+      final libDir = await paths.getLibraryDirectory();
+      return join(libDir.path, "Caches");
     }
 
-    return paths.getDownloadsDirectory().then((dir) {
-      return join(dir!.path, "Spectra");
-    });
+    final downloadsDir = await paths.getDownloadsDirectory();
+    if (downloadsDir != null) {
+      return join(downloadsDir.path, "Spectra");
+    }
+
+    final appDocDir = await paths.getApplicationDocumentsDirectory();
+    return join(appDocDir.path, "Spectra");
   }
 
   Future<void> setData(PreferencesTableCompanion data) async {
@@ -96,8 +107,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   static Future<String> getMusicCacheDir() async {
     if (kIsAndroid) {
-      final dir =
-          await paths.getExternalCacheDirectories().then((dirs) => dirs!.first);
+      final externalDirs = await paths.getExternalCacheDirectories();
+      final dir = (externalDirs != null && externalDirs.isNotEmpty)
+          ? externalDirs.first
+          : await paths.getApplicationCacheDirectory();
       if (!await dir.exists()) {
         await dir.create(recursive: true);
       }

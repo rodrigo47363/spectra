@@ -22,8 +22,8 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   /// Volume is between 0 and 1
   Future<void> setVolume(double volume) async {
-    assert(volume >= 0 && volume <= 1);
-    await _mkPlayer.setVolume(volume * 100);
+    final clamped = volume.clamp(0.0, 1.0);
+    await _mkPlayer.setVolume(clamped * 100);
   }
 
   Future<void> setSpeed(double speed) async {
@@ -68,7 +68,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     if (loopMode == PlaylistMode.loop &&
         _mkPlayer.state.playlist.index ==
             _mkPlayer.state.playlist.medias.length - 1) {
-      return sources.first;
+      return sources.firstOrNull;
     }
 
     return _mkPlayer.state.playlist.medias
@@ -78,7 +78,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get previousSource {
     if (loopMode == PlaylistMode.loop && _mkPlayer.state.playlist.index == 0) {
-      return sources.last;
+      return sources.lastOrNull;
     }
 
     return _mkPlayer.state.playlist.medias
@@ -117,7 +117,8 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }
 
   Future<void> clearPlaylist() async {
-    _mkPlayer.stop();
+    await _mkPlayer.stop();
+    await _mkPlayer.open(const mk.Playlist([]), play: false);
   }
 
   Future<void> setShuffle(bool shuffle) async {

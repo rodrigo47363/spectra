@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -24,7 +25,10 @@ class BlackListNotifier extends AsyncNotifier<List<BlacklistTableData>> {
   AppDatabase get _database => ref.read(databaseProvider);
 
   Future<void> add(BlacklistTableCompanion element) async {
-    _database.into(_database.blacklistTable).insert(element);
+    await _database.into(_database.blacklistTable).insert(
+          element,
+          mode: InsertMode.insertOrReplace,
+        );
   }
 
   Future<void> remove(String elementId) async {

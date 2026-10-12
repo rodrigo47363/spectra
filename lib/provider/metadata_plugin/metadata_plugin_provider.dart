@@ -56,7 +56,7 @@ class MetadataPluginState {
           .map((e) => PluginConfiguration.fromJson(e))
           .toList(),
       defaultMetadataPlugin: json["default_metadata_plugin"] ?? -1,
-      defaultAudioSourcePlugin: json['default_audio_source_plugin'],
+      defaultAudioSourcePlugin: json['default_audio_source_plugin'] ?? -1,
     );
   }
 
@@ -287,9 +287,11 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       throw MetadataPluginException.noReleasesFound();
     }
     final latestRelease = releases.first;
-    final downloadUrl = (latestRelease["assets"] as List).firstWhere(
-      (asset) => (asset["name"] as String).endsWith(".smplug"),
-    )["browser_download_url"];
+    final assets = latestRelease["assets"] as List?;
+    final smplugAsset = assets?.firstWhereOrNull(
+      (asset) => (asset["name"] as String?)?.endsWith(".smplug") == true,
+    );
+    final downloadUrl = smplugAsset?["browser_download_url"] as String?;
     if (downloadUrl == null) {
       throw MetadataPluginException.assetUrlNotFound();
     }
@@ -334,15 +336,19 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     await pluginDir.create(recursive: true);
 
     final pluginExtractionDir = await _getPluginExtractionDir(pluginConfig);
+    final canonicalBaseDir = canonicalize(pluginExtractionDir.path);
 
     for (final file in archive) {
       if (file.isFile) {
         final filename = file.name;
+        final targetPath = normalize(join(pluginExtractionDir.path, filename));
+        final canonicalTargetPath = canonicalize(targetPath);
+        if (!isWithin(canonicalBaseDir, canonicalTargetPath) &&
+            canonicalBaseDir != canonicalTargetPath) {
+          throw MetadataPluginException.invalidPluginArchive();
+        }
         final data = file.content as List<int>;
-        final extractedFile = File(join(
-          pluginExtractionDir.path,
-          filename,
-        ));
+        final extractedFile = File(canonicalTargetPath);
         await extractedFile.create(recursive: true);
         await extractedFile.writeAsBytes(data);
       }
@@ -400,7 +406,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     if (configPluginApiVersion.major != appPluginApiVersion.major) {
       return false;
     }
-    return configPluginApiVersion >= appPluginApiVersion;
+    return configPluginApiVersion <= appPluginApiVersion;
   }
 
   void _assertPluginApiCompatibility(PluginConfiguration plugin) {
@@ -467,14 +473,13 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
 
     // Same here, if the removed plugin is the default plugin
     // set the first available plugin as the default plugin
-    // only when there is 1 remaining plugin
     if (state.valueOrNull?.defaultMetadataPluginConfig == plugin) {
       final remainingPlugins = state.valueOrNull?.plugins.where(
             (p) =>
                 p != plugin && p.abilities.contains(PluginAbilities.metadata),
           ) ??
           [];
-      if (remainingPlugins.length == 1) {
+      if (remainingPlugins.isNotEmpty) {
         await setDefaultMetadataPlugin(remainingPlugins.first);
       }
     }
@@ -486,7 +491,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
                 p.abilities.contains(PluginAbilities.audioSource),
           ) ??
           [];
-      if (remainingPlugins.length == 1) {
+      if (remainingPlugins.isNotEmpty) {
         await setDefaultAudioSourcePlugin(remainingPlugins.first);
       }
     }
@@ -507,10 +512,10 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     }
 
     final oldPlugin = pluginRes.first;
-    final oldPluginApiVersion = Version.parse(oldPlugin.pluginApiVersion);
-    final newPluginApiVersion = Version.parse(newPlugin.pluginApiVersion);
+    final oldVersion = Version.parse(oldPlugin.version);
+    final newVersion = Version.parse(newPlugin.version);
 
-    return newPluginApiVersion > oldPluginApiVersion;
+    return newVersion > oldVersion;
   }
 
   Future<void> updatePlugin(
@@ -524,7 +529,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     final pluginUpdatedConfig =
         await downloadAndCachePlugin(update.downloadUrl);
 
-    if (pluginUpdatedConfig.name != plugin.name &&
+    if (pluginUpdatedConfig.name != plugin.name ||
         pluginUpdatedConfig.author != plugin.author) {
       throw MetadataPluginException.invalidPluginConfiguration();
     }
