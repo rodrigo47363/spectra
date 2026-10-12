@@ -81,7 +81,7 @@ Binarios oficiales firmados, listos para producción y libres de intermediarios:
 | **Linux (Debian/Ubuntu/Mint/Parrot)** | `x86_64 / amd64` | Paquete `.deb` | [📥 **Descargar Spectra-v1.1.0.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.deb) |
 | **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.xz`) | [📥 **Descargar Bundle (.tar.xz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/spectra-linux-1.1.0-x86_64.tar.xz) |
 | **Linux (Universal)** | `x86_64 / amd64` | Tarball Estándar (`.tar.gz`) | [📥 **Descargar Bundle (.tar.gz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.tar.gz) |
-| **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar Spectra-v1.0.0.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk) |
+| **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar APK Universal**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk) |
 | **Windows 10 / 11** | `x86_64` | Instalador / CLI | [🛠️ **Compilar vía CLI**](#3-entorno-windows) • [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0) |
 
 <details>
@@ -114,7 +114,7 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 <summary><b>📱 En Android (Instalación limpia sin tiendas invasivas)</b></summary>
 <br/>
 
-1. Descarga el paquete oficial: [Spectra-v1.0.0.apk](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk).
+1. Descarga el paquete oficial: [Spectra APK Universal](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk).
 2. Toca la notificación de descarga en tu dispositivo y concede permiso para instalar desde el navegador si el sistema lo solicita.
 3. Presiona **Instalar** y disfruta tu música.
 
@@ -310,14 +310,14 @@ Spectra incorpora un gestor automatizado de versiones semánticas para agilizar 
 # Consultar versión actual del proyecto
 ./scripts/bump_version.sh show
 
-# Incrementar versión de parche (1.0.0 -> 1.0.1)
+# Incrementar versión de parche (ej. 1.1.0 -> 1.1.1)
 ./scripts/bump_version.sh patch
 
-# Incrementar versión menor y etiquetar en git (1.0.0 -> 1.1.0)
+# Incrementar versión menor y etiquetar en git (ej. 1.1.0 -> 1.2.0)
 ./scripts/bump_version.sh minor --tag
 
 # Asignar versión explícita con build number
-./scripts/bump_version.sh set 1.2.0 5 --tag
+./scripts/bump_version.sh set 1.2.0 3 --tag
 ```
 
 ---
