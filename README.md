@@ -10,14 +10,14 @@
 
 [![Release](https://img.shields.io/badge/Release-v1.1.0-00E5FF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rodrigo47363/spectra/releases)
 [![License](https://img.shields.io/badge/License-BSD--4--Clause-0A84FF?style=for-the-badge)](LICENSE)
-[![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20Linux%20%7C%20Windows-30D158?style=for-the-badge)](#-descargas-y-binarios)
+[![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20Linux%20%7C%20Windows-30D158?style=for-the-badge)](#descargas-y-binarios)
 [![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero%20%2F%20No%20Tracking-FF453A?style=for-the-badge)](PRIVACY_POLICY.md)
 [![Audio Core](https://img.shields.io/badge/Audio%20Core-libmpv%20%2F%20C%2B%2B%20FFI-FF9F0A?style=for-the-badge&logo=c%2B%2B)](https://mpv.io)
 [![UI Framework](https://img.shields.io/badge/UI-Flutter%20%7C%20Shadcn-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 
 <br/>
 
-[🚀 Descargas](#descargas-y-binarios) • [⚖️ Comparativa](#manifiesto-y-comparativa-técnica) • [✨ Características](#características-de-grado-operativo) • [📱 Vista Previa](#interfaz-en-acción) • [🏗️ Arquitectura](#arquitectura-del-sistema) • [⚙️ Optimización](#optimización-y-ajustes-de-rendimiento) • [🛠️ Compilación](#compilación-desde-fuente) • [❓ FAQ](#preguntas-frecuentes-faq) • [👨‍💻 Autor](#arquitecto-y-desarrollo)
+[📱 Vista Previa](#interfaz-en-acción) • [⚖️ Comparativa](#manifiesto-y-comparativa-técnica) • [📦 Descargas](#descargas-y-binarios) • [🚀 Despliegue](#despliegue-rápido-instalación-en-1-minuto) • [🌟 Características](#características-de-grado-operativo) • [🏗️ Arquitectura](#arquitectura-del-sistema) • [⚙️ Optimización](#optimización-y-ajustes-de-rendimiento) • [🛠️ Compilación](#compilación-desde-fuente) • [🔄 DevOps](#automatización-de-versiones-devops) • [❓ FAQ](#preguntas-frecuentes-faq) • [👨‍💻 Autor](#arquitecto-y-desarrollo)
 
 <br/>
 
@@ -81,7 +81,7 @@ Binarios oficiales firmados, listos para producción y libres de intermediarios:
 | **Linux (Debian/Ubuntu/Mint/Parrot)** | `x86_64 / amd64` | Paquete `.deb` | [📥 **Descargar Spectra-v1.1.0.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.deb) |
 | **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.xz`) | [📥 **Descargar Bundle (.tar.xz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/spectra-linux-1.1.0-x86_64.tar.xz) |
 | **Linux (Universal)** | `x86_64 / amd64` | Tarball Estándar (`.tar.gz`) | [📥 **Descargar Bundle (.tar.gz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.tar.gz) |
-| **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar Spectra-v1.0.0.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-android-universal.apk) |
+| **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar Spectra-v1.0.0.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk) |
 | **Windows 10 / 11** | `x86_64` | Instalador / CLI | [🛠️ **Compilar vía CLI**](#3-entorno-windows) • [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0) |
 
 <details>
@@ -114,7 +114,7 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 <summary><b>📱 En Android (Instalación limpia sin tiendas invasivas)</b></summary>
 <br/>
 
-1. Descarga el paquete oficial: [Spectra-v1.0.0.apk](https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/Spectra-v1.0.0-android-universal.apk).
+1. Descarga el paquete oficial: [Spectra-v1.0.0.apk](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk).
 2. Toca la notificación de descarga en tu dispositivo y concede permiso para instalar desde el navegador si el sistema lo solicita.
 3. Presiona **Instalar** y disfruta tu música.
 
