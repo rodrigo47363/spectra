@@ -2,24 +2,37 @@
 
 <div align="center">
 
-<img src="assets/branding/spectra-logo.png" alt="Spectra Logo" width="165" />
+<img src="assets/branding/spectra-logo.png" alt="Spectra Logo" width="180" />
 
-### *Reproductor y agregador multimedia de alta fidelidad, diseñado bajo el principio de privacidad desde el diseño (Privacy by Design), decodificación nativa acelerada por hardware y soberanía total sobre los datos.*
+### *Reproductor y agregador multimedia de alta fidelidad, diseñado bajo el principio de **Privacy by Design**, decodificación nativa acelerada por hardware y **soberanía total sobre tus datos**.*
 
 <br/>
 
 [![Release](https://img.shields.io/badge/Release-v1.1.0-00E5FF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rodrigo47363/spectra/releases)
 [![License](https://img.shields.io/badge/License-BSD--4--Clause-0A84FF?style=for-the-badge)](LICENSE)
-[![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20Linux%20%7C%20Windows-30D158?style=for-the-badge)](#descargas-y-binarios)
+[![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20Linux%20%7C%20Windows-30D158?style=for-the-badge)](#-descargas-y-binarios)
 [![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero%20%2F%20No%20Tracking-FF453A?style=for-the-badge)](PRIVACY_POLICY.md)
 [![Audio Core](https://img.shields.io/badge/Audio%20Core-libmpv%20%2F%20C%2B%2B%20FFI-FF9F0A?style=for-the-badge&logo=c%2B%2B)](https://mpv.io)
 [![UI Framework](https://img.shields.io/badge/UI-Flutter%20%7C%20Shadcn-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 
 <br/>
 
-[📱 Vista Previa](#interfaz-en-acción) • [⚖️ Comparativa](#manifiesto-y-comparativa-técnica) • [📦 Descargas](#descargas-y-binarios) • [🚀 Despliegue](#despliegue-rápido-instalación-en-1-minuto) • [🌟 Características](#características-de-grado-operativo) • [🏗️ Arquitectura](#arquitectura-del-sistema) • [⚙️ Optimización](#optimización-y-ajustes-de-rendimiento) • [🛠️ Compilación](#compilación-desde-fuente) • [🔄 DevOps](#automatización-de-versiones-devops) • [❓ FAQ](#preguntas-frecuentes-faq) • [👨‍💻 Autor](#arquitecto-y-desarrollo)
+[![Stars](https://img.shields.io/github/stars/rodrigo47363/spectra?style=for-the-badge&color=FFD60A&logo=github)](https://github.com/rodrigo47363/spectra/stargazers)
+[![Forks](https://img.shields.io/github/forks/rodrigo47363/spectra?style=for-the-badge&color=30D158&logo=github)](https://github.com/rodrigo47363/spectra/network)
+[![Issues](https://img.shields.io/github/issues/rodrigo47363/spectra?style=for-the-badge&color=FF453A&logo=github)](https://github.com/rodrigo47363/spectra/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/rodrigo47363/spectra?style=for-the-badge&color=0A84FF&logo=git)](https://github.com/rodrigo47363/spectra/commits)
 
 <br/>
+
+> ### ⚡ **< 0.8s** arranque en frío · **~65 MB** de RAM · **0%** telemetría · **Bit-Perfect** nativo
+
+<br/>
+
+[📱 Vista Previa](#-interfaz-en-acción) • [⚖️ Comparativa](#️-manifiesto-y-comparativa-técnica) • [📦 Descargas](#-descargas-y-binarios) • [🚀 Despliegue](#-despliegue-rápido-instalación-en-1-minuto) • [🌟 Características](#-características-de-grado-operativo) • [🏗️ Arquitectura](#️-arquitectura-del-sistema) • [⚙️ Optimización](#️-optimización-y-ajustes-de-rendimiento) • [🛠️ Compilación](#️-compilación-desde-fuente) • [🔄 DevOps](#-automatización-de-versiones-devops) • [❓ FAQ](#-preguntas-frecuentes-faq) • [🤝 Contribuir](#-contribuir) • [👨‍💻 Autor](#-arquitecto-y-desarrollo)
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00E5FF,100:0A84FF&height=80&section=header&text=&fontSize=0" width="100%" />
 
 </div>
 
@@ -33,15 +46,15 @@
 
 <br/><br/>
 
-### Ecosistema Móvil (Android)
+### 🖥️ Ecosistema Móvil · Android
 <img src="assets/branding/mobile-screenshots/combined.jpg" alt="Spectra Mobile Ecosystem" width="900" />
 
 <br/><br/>
 
-### Experiencia de Escritorio (Linux / Windows)
+### 💻 Experiencia de Escritorio · Linux / Windows
 <img src="assets/branding/spectra-desktop-screenshot.png" alt="Spectra Desktop Interface" width="900" />
 
-*Interfaz moderna inspirada en Shadcn UI: extracción cromática adaptativa en tiempo real derivada de la carátula del álbum.*
+<sub>✨ *Interfaz moderna inspirada en **Shadcn UI**: extracción cromática adaptativa en tiempo real derivada de la carátula del álbum.*</sub>
 
 </div>
 
@@ -49,16 +62,24 @@
 
 ## 📌 Visión del Proyecto
 
-**Spectra** es una estación de reproducción de medios multiplataforma que resuelve la degradación actual de los reproductores comerciales: suscripciones obligatorias, publicidad invasiva, perfiles de comportamiento (*fingerprinting*) y aplicaciones infladas construidas sobre navegadores embebidos que consumen gigabytes de memoria RAM.
+**Spectra** es una estación de reproducción de medios multiplataforma que resuelve la **degradación actual de los reproductores comerciales**: suscripciones obligatorias, publicidad invasiva, perfiles de comportamiento (*fingerprinting*) y aplicaciones infladas construidas sobre navegadores embebidos que consumen gigabytes de memoria RAM.
 
-Construido combinando la agilidad visual de **Flutter** con la potencia de decodificación nativa de **C++ (`libmpv`)**, Spectra opera bajo el paradigma **BYOMM (*Bring Your Own Music Metadata*)**: desacopla completamente el motor de reproducción de las fuentes de datos, permitiendo explorar, organizar y reproducir música en alta fidelidad sin ceder tu identidad a intermediarios comerciales.
+Construido combinando la **agilidad visual de Flutter** con la **potencia de decodificación nativa de C++ (`libmpv`)**, Spectra opera bajo el paradigma **BYOMM (*Bring Your Own Music Metadata*)**: desacopla completamente el motor de reproducción de las fuentes de datos, permitiendo explorar, organizar y reproducir música en **alta fidelidad sin ceder tu identidad** a intermediarios comerciales.
+
+<div align="center">
+
+| 🎯 Filosofía | 🛡️ Garantía | ⚡ Rendimiento |
+| :---: | :---: | :---: |
+| *Tu música, tus reglas* | *Cero rastreo, cero cuentas* | *Bit-perfect nativo* |
+
+</div>
 
 ---
 
 ## ⚖️ Manifiesto y Comparativa Técnica
 
 > [!IMPORTANT]
-> **Privacidad Radical:** Spectra no posee servidores de telemetría, no vende analíticas a anunciantes y no requiere cuentas obligatorias. Tus listas de reproducción, historial y llaves residen únicamente en tu dispositivo.
+> **🛡️ Privacidad Radical:** Spectra **no posee servidores de telemetría**, no vende analíticas a anunciantes y no requiere cuentas obligatorias. Tus listas de reproducción, historial y llaves residen **únicamente en tu dispositivo**.
 
 | Métrica / Capacidad | Clientes Comerciales (Spotify, etc.) | Clientes Basados en Electron | 🛡️ Spectra Player |
 | :--- | :---: | :---: | :---: |
@@ -69,12 +90,14 @@ Construido combinando la agilidad visual de **Flutter** con la potencia de decod
 | **Descarga Offline Libre** | ❌ Archivos cifrados con DRM | ❌ No soportado / Incompleto | ✅ **Audio libre con ID3 tags incrustados** |
 | **Motor de Audio** | ⚠️ Decodificadores web cerrados | ⚠️ WebAudio API / HTML5 Audio | 🚀 **`libmpv` Nativo (Bit-Perfect)** |
 | **Aceleración por Hardware** | ⚠️ Parcial | ⚠️ Inestable / Alto consumo térmico | ✅ **VA-API / VDPAU / MediaCodec** |
+| **Código Auditable** | ❌ Propietario / Ofuscado | ⚠️ Parcialmente abierto | ✅ **100% Código abierto BSD-4** |
+| **Distribución** | ⚠️ Atada a tiendas | ⚠️ Atada a tiendas | ✅ **GitHub Releases directo** |
 
 ---
 
 ## 📦 Descargas y Binarios
 
-Binarios oficiales firmados, listos para producción y libres de intermediarios:
+**Binarios oficiales firmados**, listos para producción y libres de intermediarios:
 
 | Plataforma | Arquitectura | Formato de Paquete | Enlace de Descarga Directa |
 | :--- | :---: | :---: | :--- |
@@ -88,7 +111,7 @@ Binarios oficiales firmados, listos para producción y libres de intermediarios:
 <summary><b>🔐 Verificación Criptográfica de Integridad (SHA-256)</b></summary>
 <br/>
 
-Para garantizar que los binarios no han sido alterados en tránsito, verifica sus firmas hash contra el archivo oficial [`SHA256SUMS.txt`](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/SHA256SUMS.txt):
+Para garantizar que los binarios **no han sido alterados en tránsito**, verifica sus firmas hash contra el archivo oficial [`SHA256SUMS.txt`](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/SHA256SUMS.txt):
 
 ```bash
 # Descargar archivo de firmas y verificar automáticamente
@@ -102,6 +125,7 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 | `spectra-linux-1.1.0-x86_64.tar.xz` | `6951433b5885c89038950f4cad336526524bc7716725bab7532f667ef54f0d82` |
 | `Spectra-v1.1.0-linux-x86_64.tar.gz` | `40bec88b628d1b0970b1f746ff9a002eaeedf612bf32234827dd1f2ff02e8871` |
 | `Spectra-v1.0.0-android-universal.apk` | `d765babbab3fa0f178205bcbff70c8c63a47045e0db590e54b2d1d5cdd4e706a` |
+
 </details>
 
 > 🌐 *Repositorio de binarios históricos y tags de versión: [GitHub Releases v1.1.0](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0)*
@@ -119,7 +143,8 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 3. Presiona **Instalar** y disfruta tu música.
 
 > [!TIP]
-> **Audio continuo con pantalla bloqueada:** En *Ajustes de Android > Aplicaciones > Spectra > Batería*, selecciona **"Sin restricciones"** (o deshabilita el ahorro de energía para la app). Esto previene que el kernel de Android suspenda el socket loopback local mientras la pantalla está apagada.
+> **🔋 Audio continuo con pantalla bloqueada:** En *Ajustes de Android > Aplicaciones > Spectra > Batería*, selecciona **"Sin restricciones"** (o deshabilita el ahorro de energía para la app). Esto previene que el kernel de Android suspenda el socket loopback local mientras la pantalla está apagada.
+
 </details>
 
 <details>
@@ -136,6 +161,7 @@ sudo apt install -y ./Spectra-v1.1.0-linux-x86_64.deb
 ```bash
 curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/install.sh | sudo bash
 ```
+
 </details>
 
 <details>
@@ -148,14 +174,27 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
    ```
 2. El archivo `.exe` empaquetado con Inno Setup se generará en `dist/Spectra-windows-x86_64-setup.exe`.
 3. Ejecuta el instalador y sigue el asistente interactivo.
+
 </details>
 
 ---
 
 ## 🌟 Características de Grado Operativo
 
+<div align="center">
+
+| 🛡️ Seguridad | ⚡ Rendimiento | 🎵 Experiencia |
+| :---: | :---: | :---: |
+| Soberanía total | Bit-Perfect nativo | Interfaz reactiva |
+| Zero-Telemetry | < 15 ms latencia | Letras karaoke |
+| Proxy blindado | AOT Compilado | Descargas con ID3 |
+
+</div>
+
+<br/>
+
 * 🔒 **Soberanía y Zero-Telemetry:** Ausencia certificada de SDKs publicitarios, identificadores únicos de dispositivo (IMEI/Android ID/GUID), análisis de telemetría de red o rastreadores analíticos en segundo plano.
-* ⚡ **Pipeline Nativo C++ (`libmpv`):** Vinculación directa mediante FFI (*Foreign Function Interface*) con las librerías dinámicas de `mpv`. Permite reproducción *bit-perfect*, control de ganancia ReplayGain y latencia de búfer inferior a 15 ms.
+* ⚡ **Pipeline Nativo C++ (`libmpv`):** Vinculación directa mediante FFI (*Foreign Function Interface*) con las librerías dinámicas de `mpv`. Permite reproducción *bit-perfect*, control de ganancia ReplayGain y latencia de búfer inferior a **15 ms**.
 * 🛡️ **Proxy Local Blindado en Loopback (`127.0.0.1`):** Servidor HTTP local embebido (*Shelf*) confinado a la interfaz local. Aísla las peticiones de streaming, elimina cabeceras que delaten el dispositivo y previene fugas de metadatos en redes públicas.
 * 🔄 **Conmutación Dual Anti-Throttling:** Soporte alternable entre motores de extracción en caliente (**NewPipe Extractor** y **YouTubeExplode**) para evadir restricciones de velocidad (*rate limiting*) en orígenes remotos.
 * 🎼 **Catálogo Completo y Discografía de Artistas (`all_tracks`):** Exploración completa de canciones y sencillos de cualquier artista sin truncamientos arbitrarios en *Top Tracks*, con paginación fluida y soporte para vista en lista y cuadrícula.
@@ -164,7 +203,7 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
 * 📥 **Gestor de Descargas con Tagging ID3 Completo:** Descarga canciones y álbumes en alta calidad con carátulas incrustadas y metadatos estándar (título, artista, año, género, número de pista).
 * 🎤 **Letras Sincronizadas (Modo Karaoke):** Sincronización lírica dinámica y fluida en tiempo real integrada en el panel de reproducción.
 * 🎨 **Interfaz Reactiva Shadcn UI:** UI ligera basada en Flutter Hooks y Riverpod, con extracción adaptativa de paleta de colores derivada dinámicamente de cada portada musical.
-* 🗄️ **Almacenamiento Local-First Cifrado (Drift ORM v10):** Base de datos relacional ultrarrápida en **SQLite con Drift ORM** probada con 58 tests de verificación y migración. Las credenciales y claves de sesión se custodian en los almacenes cifrados nativos del sistema operativo (`libsecret` en Linux y `EncryptedSharedPreferences` con respaldo en Keystore por hardware en Android).
+* 🗄️ **Almacenamiento Local-First Cifrado (Drift ORM v10):** Base de datos relacional ultrarrápida en **SQLite con Drift ORM** probada con **58 tests** de verificación y migración. Las credenciales y claves de sesión se custodian en los almacenes cifrados nativos del sistema operativo (`libsecret` en Linux y `EncryptedSharedPreferences` con respaldo en Keystore por hardware en Android).
 
 ---
 
@@ -235,24 +274,26 @@ sequenceDiagram
 
 ## ⚙️ Optimización y Ajustes de Rendimiento
 
-Para exprimir al máximo la eficiencia energética y la calidad acústica:
+> **Objetivo:** exprimir al máximo la eficiencia energética y la calidad acústica.
 
-### 📱 Ajustes Críticos en Android:
-1. **Códec Recomendado (`m4a` / AAC):**
+### 📱 Ajustes Críticos en Android
+
+1. **🎧 Códec Recomendado (`m4a` / AAC):**
    * En *Ajustes > Reproducción*, selecciona **`m4a`**. Esto activa la decodificación por hardware nativo en el silicio del dispositivo (*MediaCodec*), manteniendo la CPU en estados de bajo consumo (*C-States*) y reduciendo drásticamente el gasto de batería frente a la decodificación por software de formatos OPUS.
-2. **Alternancia de Motor de Extracción:**
+2. **🔄 Alternancia de Motor de Extracción:**
    * Si la reproducción sufre congelamientos por estrangulamiento de IP de las CDNs de origen, cambia entre **NewPipe** y **YouTubeExplode** en *Ajustes*. El cambio restablece el endpoint inmediatamente.
-3. **Optimización de Batería (Doze Mode Bypass):**
+3. **🔋 Optimización de Batería (Doze Mode Bypass):**
    * Asigna **"Sin restricciones"** a Spectra en la gestión de batería del sistema para evitar que el socket `127.0.0.1` sea cerrado cuando el teléfono entra en reposo profundo.
 
-### 🐧 Ajustes Críticos en Linux:
+### 🐧 Ajustes Críticos en Linux
+
 * Asegúrate de tener instaladas las librerías dinámicas `libmpv-dev` o `mpv` y los controladores de aceleración por video correspondientes a tu GPU (`intel-media-va-driver`, `mesa-va-drivers` o `nvidia-vaapi-driver`).
 
 ---
 
 ## 🛠️ Compilación desde Fuente
 
-Guía hermética para compilar binarios reproducibles en tu propio entorno:
+**Guía hermética** para compilar binarios reproducibles en tu propio entorno:
 
 ### 1. Entorno Linux (Debian, Ubuntu, Parrot OS, Kali)
 
@@ -269,7 +310,7 @@ Compilar binario optimizado de producción:
 ```
 *Binario generado en:* `build/linux/x64/release/bundle/spectra`
 
-Empaquetar instalador debian estándar:
+Empaquetar instalador Debian estándar:
 ```bash
 ./scripts/package_deb.sh
 ```
@@ -304,7 +345,7 @@ dart run cli/cli.dart build windows
 
 ## 🔄 Automatización de Versiones (DevOps)
 
-Spectra incorpora un gestor automatizado de versiones semánticas para agilizar el ciclo de despliegue:
+Spectra incorpora un **gestor automatizado de versiones semánticas** para agilizar el ciclo de despliegue:
 
 ```bash
 # Consultar versión actual del proyecto
@@ -322,6 +363,27 @@ Spectra incorpora un gestor automatizado de versiones semánticas para agilizar 
 
 ---
 
+## 🗺️ Roadmap
+
+<div align="center">
+
+| Estado | Característica | Versión Objetivo |
+| :---: | :--- | :---: |
+| ✅ | Reproducción nativa `libmpv` (C++ FFI) | `v1.0.0` |
+| ✅ | Proxy local blindado en loopback | `v1.0.0` |
+| ✅ | Descargas con tagging ID3 completo | `v1.1.0` |
+| ✅ | Letras sincronizadas (Karaoke) | `v1.1.0` |
+| 🔄 | Soporte macOS (Apple Silicon + Intel) | `v1.2.0` |
+| 🔄 | Ecualizador paramétrico de 10 bandas | `v1.2.0` |
+| 🔄 | Sincronización opcional P2P vía Syncthing | `v1.3.0` |
+| 📋 | Soporte para podcasts y audiolibros | `v1.3.0` |
+| 📋 | Plugin SDK para fuentes de metadatos | `v2.0.0` |
+| 💭 | Integración con servidores autoalojados (Navidrome/Jellyfin) | `v2.0.0` |
+
+</div>
+
+---
+
 ## ❓ Preguntas Frecuentes (FAQ)
 
 <details>
@@ -333,13 +395,13 @@ Spectra incorpora un gestor automatizado de versiones semánticas para agilizar 
 <details>
 <summary><b>¿De dónde provienen los flujos de audio y cómo es legal?</b></summary>
 <br/>
-Spectra opera bajo el paradigma BYOMM. La aplicación desacopla los metadatos de las pistas y resuelve el audio en crudo a través de motores de extracción abiertos (como NewPipe). No aloja ni distribuye archivos en servidores propios; actúa como un cliente descentralizado gobernado exclusivamente por el usuario.
+Spectra opera bajo el paradigma <b>BYOMM</b>. La aplicación desacopla los metadatos de las pistas y resuelve el audio en crudo a través de motores de extracción abiertos (como NewPipe). No aloja ni distribuye archivos en servidores propios; actúa como un cliente descentralizado gobernado exclusivamente por el usuario.
 </details>
 
 <details>
 <summary><b>¿Por qué Spectra no se distribuye en Google Play Store?</b></summary>
 <br/>
-Las directivas comerciales de Google prohíben explícitamente en su tienda toda aplicación que permita reproducción en segundo plano y descargas sin anuncios de fuentes como YouTube, ya que compite directamente con su modelo publicitario y de suscripción. Distribuirlo directamente en GitHub garantiza neutralidad, código no adulterado y ausencia de rastreadores forzados.
+Las directivas comerciales de Google prohíben explícitamente en su tienda toda aplicación que permita reproducción en segundo plano y descargas sin anuncios de fuentes como YouTube, ya que compite directamente con su modelo publicitario y de suscripción. Distribuirlo directamente en GitHub garantiza <b>neutralidad, código no adulterado y ausencia de rastreadores forzados</b>.
 </details>
 
 <details>
@@ -354,6 +416,64 @@ Las directivas comerciales de Google prohíben explícitamente en su tienda toda
 <b>Sí.</b> Spectra integra un gestor de descargas que almacena las pistas en formatos estándar con carátulas, artista y metadatos incrustados listos para reproducir en cualquier momento sin consumir datos móviles.
 </details>
 
+<details>
+<summary><b>¿Spectra funciona sin conexión a Internet?</b></summary>
+<br/>
+Para reproducir <b>descargas locales</b>, sí — funciona 100% offline. La navegación de catálogo, búsqueda y resolución de streams requiere conexión, ya que depende de los motores de extracción remotos.
+</details>
+
+<details>
+<summary><b>¿Puedo contribuir al proyecto?</b></summary>
+<br/>
+<b>¡Claro que sí!</b> Toda contribución es bienvenida: reportes de bugs, mejoras de traducción, optimizaciones de rendimiento, PRs con nuevas características. Consulta la sección <a href="#-contribuir">Contribuir</a> para más detalles.
+</details>
+
+---
+
+## 🤝 Contribuir
+
+Spectra es un proyecto **abierto y comunitario**. Toda contribución, por pequeña que sea, es valorada.
+
+### 🧭 Guía Rápida
+
+```bash
+# 1. Fork del repositorio en GitHub
+# 2. Clonar tu fork localmente
+git clone https://github.com/tu-usuario/spectra.git
+cd spectra
+
+# 3. Crear una rama temática
+git checkout -b feature/nueva-caracteristica
+
+# 4. Configurar el entorno y compilar
+flutter pub get
+./build_optimized.sh
+
+# 5. Commit siguiendo Conventional Commits
+git commit -m "feat(player): añadir ecualizador paramétrico"
+
+# 6. Push y abrir Pull Request
+git push origin feature/nueva-caracteristica
+```
+
+### 📐 Convenciones
+
+* **Commits:** [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `refactor:`, `perf:`).
+* **Estilo Dart:** `dart format .` antes de cada commit.
+* **Análisis:** `flutter analyze` sin warnings.
+* **Tests:** Cobertura mínima requerida del **80%** en nuevas características.
+
+### 🐛 Reporte de Bugs
+
+Antes de abrir un issue, verifica que:
+- [ ] Usas la **última versión** release.
+- [ ] El bug **no está ya reportado** en [Issues](https://github.com/rodrigo47363/spectra/issues).
+- [ ] Incluyes **logs** relevantes, versión de SO y modelo de dispositivo.
+
+### 💡 Ideas y Sugerencias
+
+Abre un [Discussion](https://github.com/rodrigo47363/spectra/discussions) para debatir nuevas características o mejoras arquitectónicas.
+
 ---
 
 ## 👨‍💻 Arquitecto y Desarrollo
@@ -361,9 +481,12 @@ Las directivas comerciales de Google prohíben explícitamente en su tienda toda
 <div align="center">
 
 ### **Rodrigo**
+
 *Offensive Security Specialist & Software Architect*
 
 > *"Impacto real > Teoría. Privacidad y rendimiento de grado operativo."*
+
+<br/>
 
 [![GitHub](https://img.shields.io/badge/GitHub-rodrigo47363-181717?style=for-the-badge&logo=github)](https://github.com/rodrigo47363)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Rodrigo_V.-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/rodrigo-v-695728215)
@@ -376,7 +499,7 @@ Las directivas comerciales de Google prohíben explícitamente en su tienda toda
 
 ## ⚡ Apoyo a la Investigación Operativa
 
-Si este proyecto o las herramientas que he desarrollado han aportado valor a tu flujo de trabajo diario, puedes apoyar el desarrollo continuo y la infraestructura mediante donaciones directas:
+Si este proyecto o las herramientas que he desarrollado han aportado valor a tu flujo de trabajo diario, puedes apoyar el **desarrollo continuo** y la infraestructura mediante donaciones directas:
 
 | Activo Criptográfico | Red Oficial | Dirección de Destino |
 | :--- | :---: | :--- |
@@ -386,22 +509,47 @@ Si este proyecto o las herramientas que he desarrollado han aportado valor a tu 
 
 ---
 
+## 🌟 Agradecimientos
+
+Spectra no existiría sin el trabajo desinteresado de miles de desarrolladores y comunidades de código abierto. Agradecimientos especiales a:
+
+* 🎬 **[mpv](https://mpv.io)** — El motor de reproducción más potente y respetuoso con el usuario del ecosistema libre.
+* 🎨 **[Flutter](https://flutter.dev)** — Framework multiplataforma de alto rendimiento.
+* 🧩 **[NewPipe](https://newpipe.net)** — Referentes absolutos en clientes soberanos de YouTube.
+* 🛡️ **[Riverpod](https://riverpod.dev)** · **[Drift](https://drift.simonbinder.eu)** · **[Shadcn UI](https://ui.shadcn.com)** — El trípode técnico de la capa Flutter.
+* 👥 **Toda la comunidad de auditores, traductores y contribuyentes** que hacen que este proyecto crezca cada día.
+
+---
+
 ## 📜 Licencia y Descargo de Responsabilidad
 
 Este software se publica bajo los términos de la licencia **BSD 4-Clause**. Para más detalles, consulta el archivo [LICENSE](LICENSE).
 
 ```text
 Copyright (c) 2026, Rodrigo. All rights reserved.
+
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the conditions in LICENSE are met.
 ```
 
-**Descargo Legal:** Spectra no aloja, retransmite ni comercializa material protegido por derechos de autor. Todas las consultas de medios y metadatos se resuelven de forma descentralizada y del lado del cliente a través de los plugins y fuentes configurados por el usuario final bajo su propia responsabilidad.
+**⚖️ Descargo Legal:** Spectra **no aloja, retransmite ni comercializa** material protegido por derechos de autor. Todas las consultas de medios y metadatos se resuelven de forma descentralizada y del lado del cliente a través de los plugins y fuentes configurados por el **usuario final bajo su propia responsabilidad**.
 
 ---
 
 <div align="center">
 
-<sub>Desarrollado con rigor técnico y soberanía digital • Diseñado para perdurar.</sub>
+<sub>🛡️ Desarrollado con rigor técnico y soberanía digital • Diseñado para perdurar.</sub>
+
+<br/><br/>
+
+[![Volver Arriba](https://img.shields.io/badge/⬆_Volver_Arriba-00E5FF?style=for-the-badge)](#️-spectra--high-performance-sovereign-music-player)
+
+<br/>
+
+**⭐ Si Spectra aporta valor a tu stack, considera darle una estrella. Ayuda a más gente a descubrirlo.**
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0A84FF,100:00E5FF&height=100&section=footer" width="100%" />
 
 </div>
