@@ -105,7 +105,7 @@ Construido combinando la **agilidad visual de Flutter** con la **potencia de dec
 | **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.xz`) | [📥 **Descargar Bundle (.tar.xz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/spectra-linux-1.1.0-x86_64.tar.xz) |
 | **Linux (Universal)** | `x86_64 / amd64` | Tarball Estándar (`.tar.gz`) | [📥 **Descargar Bundle (.tar.gz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.tar.gz) |
 | **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar APK Universal**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk) |
-| **Windows 10 / 11** | `x86_64` | Instalador / CLI | [🛠️ **Compilar vía CLI**](#3-entorno-windows) • [Ver Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0) |
+| **Windows 10 / 11** | `x86_64` | Portable Bundle (`.zip`) | [📥 **Descargar Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-windows-x64.zip) |
 
 <details>
 <summary><b>🔐 Verificación Criptográfica de Integridad (SHA-256)</b></summary>
@@ -125,6 +125,7 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 | `spectra-linux-1.1.0-x86_64.tar.xz` | `6951433b5885c89038950f4cad336526524bc7716725bab7532f667ef54f0d82` |
 | `Spectra-v1.1.0-linux-x86_64.tar.gz` | `40bec88b628d1b0970b1f746ff9a002eaeedf612bf32234827dd1f2ff02e8871` |
 | `Spectra-v1.0.0-android-universal.apk` | `d765babbab3fa0f178205bcbff70c8c63a47045e0db590e54b2d1d5cdd4e706a` |
+| `Spectra-windows-x64.zip` | `b7fbf99c32eaf011b703f00136e479528c15564c18c8aebac0c74bf15c2f0810` |
 
 </details>
 
@@ -165,15 +166,12 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
 </details>
 
 <details>
-<summary><b>💻 En Windows 10 / 11</b></summary>
+<summary><b>💻 En Windows 10 / 11 (Bundle Portable sin Instalación)</b></summary>
 <br/>
 
-1. Consulta los binarios disponibles en [Releases](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0) o compila el instalador nativo directamente mediante el CLI del proyecto:
-   ```bash
-   dart run cli/cli.dart build windows
-   ```
-2. El archivo `.exe` empaquetado con Inno Setup se generará en `dist/Spectra-windows-x86_64-setup.exe`.
-3. Ejecuta el instalador y sigue el asistente interactivo.
+1. Descarga el paquete oficial portátil: [Spectra Windows x64 (.zip)](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-windows-x64.zip).
+2. Extrae el archivo `.zip` en la carpeta de tu preferencia.
+3. Ejecuta `spotube.exe` y disfruta de tu música al instante con aceleración nativa por hardware.
 
 </details>
 
@@ -334,12 +332,18 @@ flutter build apk --flavor stable
 
 ### 3. Entorno Windows
 
-**Requisitos:** Visual Studio 2022 (*Desktop development with C++*) e Inno Setup 6.
+**Requisitos:** Visual Studio 2022 (*Desktop development with C++*) y Flutter SDK (3.29.0+).
 
-```bash
-dart run cli/cli.dart build windows
+```powershell
+# Habilitar soporte de escritorio y compilar binario de release
+flutter config --enable-windows-desktop
+flutter pub get
+flutter build windows --release
 ```
-*Ubicación del instalador:* `dist/Spectra-windows-x86_64-setup.exe`
+*Ubicación del ejecutable:* `build\windows\x64\runner\Release\spotube.exe`
+
+> [!TIP]
+> **Pipeline CI/CD:** El proyecto cuenta con un workflow automatizado en [`.github/workflows/build-windows.yml`](.github/workflows/build-windows.yml) que compila y empaqueta el bundle portable `.zip` directamente en runners de GitHub Actions.
 
 ---
 
