@@ -114,7 +114,7 @@ Construido combinando la **agilidad visual de Flutter** con la **potencia de dec
 | :--- | :--- | :--- |
 | 📱 **Teléfono Android moderno**<br/>*(Samsung, Xiaomi, Motorola, Pixel, Realme, etc.)* | [📥 **Spectra-android-arm64-v8a.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-arm64-v8a.apk) | **Opción para el 99% de teléfonos.** Arquitectura ARM de 64 bits con decodificación nativa de alta eficiencia y menor consumo de batería. |
 | 📱 **Teléfono Android antiguo o TV Box**<br/>*(Dispositivos de hace más de 7 años o gama de entrada)* | [📥 **Spectra-android-armeabi-v7a.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-armeabi-v7a.apk) | Arquitectura ARM de 32 bits compatible con procesadores y versiones de Android heredadas. |
-| 💻 **PC o Laptop con Windows 10 u 11**<br/>*(Cualquier PC Intel o AMD)* | [📥 **Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip) | Paquete portable oficial. Solo descomprimes el archivo `.zip` y ejecutas `spotube.exe` de inmediato sin instaladores. |
+| 💻 **PC o Laptop con Windows 10 u 11**<br/>*(Cualquier PC Intel o AMD)* | [📥 **Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip) | Paquete portable oficial. Solo descomprimes el archivo `.zip` y ejecutas `spectra.exe` de inmediato sin instaladores. |
 | 🐧 **PC con Linux (Debian / Ubuntu / Parrot / Mint)**<br/>*(Ubuntu, Debian, Linux Mint, Parrot OS, Kali, Pop!_OS)* | [📥 **Spectra-v1.1.1-linux-x86_64.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-v1.1.1-linux-x86_64.deb) | Instalador nativo `.deb` con integración automática en el menú de aplicaciones del sistema. |
 | 🐧 **PC con Linux (Arch / Fedora / Manjaro / Portable)**<br/>*(Arch Linux, Fedora, Manjaro, openSUSE o modo portable)* | [📥 **spectra-linux-1.1.1-x86_64.tar.xz**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/spectra-linux-1.1.1-x86_64.tar.xz) | Tarball portable universal de alta compresión. Descomprimes y ejecutas `./spectra` sin requerir permisos root. |
 
@@ -138,7 +138,7 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 | `Spectra-android-arm64-v8a.apk` | `da7cccd50a1b5bdfe9fe0d96001156e17ea3aba94c05a1a28a6860028fb90431` |
 | `Spectra-android-armeabi-v7a.apk` | `9aee63f81f3fe4b09dd291690e42b36aad2df5db021de28fca5771d717e5d74e` |
 | `Spectra-android-x86_64.apk` | `cb3c7c4e2567b2189cf42081f6e45ca53ae3850f64af2fdcb49c8e9d0b506c0e` |
-| `Spectra-windows-x64.zip` | `b7fbf99c32eaf011b703f00136e479528c15564c18c8aebac0c74bf15c2f0810` |
+| `Spectra-windows-x64.zip` | `f30151e2cd4e875bc5d52af9521c7fa827b54876fcb7c5a7c86b60141b61722f` |
 
 </details>
 
@@ -184,7 +184,7 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
 
 1. Descarga el paquete oficial portátil: [Spectra Windows x64 (.zip)](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip).
 2. Extrae el archivo `.zip` en la carpeta de tu preferencia.
-3. Ejecuta `spotube.exe` y disfruta de tu música al instante con aceleración nativa por hardware.
+3. Ejecuta `spectra.exe` y disfruta de tu música al instante con aceleración nativa por hardware.
 
 </details>
 
@@ -353,7 +353,7 @@ flutter config --enable-windows-desktop
 flutter pub get
 flutter build windows --release
 ```
-*Ubicación del ejecutable:* `build\windows\x64\runner\Release\spotube.exe`
+*Ubicación del ejecutable:* `build\windows\x64\runner\Release\spectra.exe`
 
 > [!TIP]
 > **Pipeline CI/CD:** El proyecto cuenta con un workflow automatizado en [`.github/workflows/build-windows.yml`](.github/workflows/build-windows.yml) que compila y empaqueta el bundle portable `.zip` directamente en runners de GitHub Actions.
