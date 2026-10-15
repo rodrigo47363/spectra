@@ -27,7 +27,7 @@ class SearchPageTracksTab extends HookConsumerWidget {
     final searchTracksNotifier =
         ref.read(metadataPluginSearchTracksProvider(searchTerm).notifier);
     final searchTracks =
-        searchTracksSnapshot.asData?.value.items ?? [FakeData.track];
+        searchTracksSnapshot.asData?.value.items ?? [];
 
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
@@ -51,7 +51,9 @@ class SearchPageTracksTab extends HookConsumerWidget {
         loadingBuilder: (context) {
           return Skeletonizer(
             enabled: true,
-            child: TrackTile(track: FakeData.track, playlist: playlist),
+            child: IgnorePointer(
+              child: TrackTile(track: FakeData.track, playlist: playlist),
+            ),
           );
         },
         onFetchData: () {

@@ -80,7 +80,7 @@ class PreferencesTable extends Table {
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSourceId => text().nullable()();
   TextColumn get youtubeClientEngine => textEnum<YoutubeClientEngine>()
-      .withDefault(Constant(YoutubeClientEngine.youtubeExplode.name))();
+      .withDefault(Constant(YoutubeClientEngine.newPipe.name))();
   BoolColumn get discordPresence =>
       boolean().withDefault(const Constant(true))();
   BoolColumn get endlessPlayback =>

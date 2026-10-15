@@ -447,10 +447,15 @@ class LocalLibraryPage extends HookConsumerWidget {
                                       : filteredTracks.length,
                                   itemBuilder: (context, index) {
                                     if (trackSnapshot.isLoading) {
-                                      return TrackTile(
-                                        playlist: playlist,
-                                        track: FakeData.track,
-                                        index: index,
+                                      return IgnorePointer(
+                                        child: Skeletonizer(
+                                          enabled: true,
+                                          child: TrackTile(
+                                            playlist: playlist,
+                                            track: FakeData.track,
+                                            index: index,
+                                          ),
+                                        ),
                                       );
                                     }
 
@@ -481,12 +486,14 @@ class LocalLibraryPage extends HookConsumerWidget {
                   loading: () => Expanded(
                     child: Skeletonizer(
                       enabled: true,
-                      child: ListView.builder(
-                        itemCount: 5,
-                        itemBuilder: (context, index) => TrackTile(
-                          track: FakeData.track,
-                          index: index,
-                          playlist: playlist,
+                      child: IgnorePointer(
+                        child: ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (context, index) => TrackTile(
+                            track: FakeData.track,
+                            index: index,
+                            playlist: playlist,
+                          ),
                         ),
                       ),
                     ),

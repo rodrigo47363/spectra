@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
@@ -96,6 +97,9 @@ class AudioPlayerStreamListeners {
         final minimumListenTime = min(audioPlayer.duration.inSeconds ~/ 2, 240);
 
         if (audioPlayerState.activeTrack == null ||
+            audioPlayerState.activeTrack?.id == "1" ||
+            audioPlayerState.activeTrack?.id == FakeData.track.id ||
+            audioPlayerState.activeTrack?.name == FakeData.track.name ||
             lastScrobbled == uid ||
             position.inSeconds < minimumListenTime ||
             audioPlayer.duration == Duration.zero ||

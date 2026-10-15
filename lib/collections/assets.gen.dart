@@ -77,6 +77,14 @@ class $AssetsPluginsGen {
   /// Directory path: assets/plugins/spotube-plugin-youtube-audio
   $AssetsPluginsSpotubePluginYoutubeAudioGen get spotubePluginYoutubeAudio =>
       const $AssetsPluginsSpotubePluginYoutubeAudioGen();
+
+  /// Directory path: assets/plugins/spotube-plugin-spotify
+  $AssetsPluginsSpotubePluginSpotifyGen get spotubePluginSpotify =>
+      const $AssetsPluginsSpotubePluginSpotifyGen();
+
+  /// Directory path: assets/plugins/spectra-plugin-spotify
+  $AssetsPluginsSpectraPluginSpotifyGen get spectraPluginSpotify =>
+      const $AssetsPluginsSpectraPluginSpotifyGen();
 }
 
 class $AssetsImagesLogosGen {
@@ -115,6 +123,28 @@ class $AssetsPluginsSpotubePluginYoutubeAudioGen {
   /// File path: assets/plugins/spotube-plugin-youtube-audio/plugin.smplug
   String get plugin =>
       'assets/plugins/spotube-plugin-youtube-audio/plugin.smplug';
+
+  /// List of all assets
+  List<String> get values => [plugin];
+}
+
+class $AssetsPluginsSpotubePluginSpotifyGen {
+  const $AssetsPluginsSpotubePluginSpotifyGen();
+
+  /// File path: assets/plugins/spotube-plugin-spotify/plugin.smplug
+  String get plugin =>
+      'assets/plugins/spotube-plugin-spotify/plugin.smplug';
+
+  /// List of all assets
+  List<String> get values => [plugin];
+}
+
+class $AssetsPluginsSpectraPluginSpotifyGen {
+  const $AssetsPluginsSpectraPluginSpotifyGen();
+
+  /// File path: assets/plugins/spectra-plugin-spotify/plugin.smplug
+  String get plugin =>
+      'assets/plugins/spectra-plugin-spotify/plugin.smplug';
 
   /// List of all assets
   List<String> get values => [plugin];

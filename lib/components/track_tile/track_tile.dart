@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/hover_builder.dart';
@@ -110,7 +111,12 @@ class TrackTile extends HookConsumerWidget {
           builder: (context, isHovering) => ButtonTile(
             selected: isSelected,
             onPressed: () async {
-              if (isBlackListed) return;
+              if (isBlackListed ||
+                  track.id == "1" ||
+                  track.id == FakeData.track.id ||
+                  track.name == FakeData.track.name) {
+                return;
+              }
               try {
                 isLoading.value = true;
                 await onTap?.call();
@@ -247,12 +253,15 @@ class TrackTile extends HookConsumerWidget {
                 padding: (context, states, value) =>
                   EdgeInsets.zero,
                 ),
-                onPressed: effectiveSelection
-                  ? null
-                  : () {
-                    context
-                      .navigateTo(TrackRoute(trackId: track.id));
-                  },
+                onPressed: effectiveSelection ||
+                        track.id == "1" ||
+                        track.id == FakeData.track.id ||
+                        track.name == FakeData.track.name
+                    ? null
+                    : () {
+                        context
+                            .navigateTo(TrackRoute(trackId: track.id));
+                      },
                               child: Text(
                                 track.name,
                                 maxLines: 1,

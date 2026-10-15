@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -61,7 +62,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       await audioPlayer.setShuffle(playerState.shuffled);
     }
 
-    final tracks = playerState.tracks;
+    final tracks = playerState.tracks
+        .where((t) =>
+            t.id != FakeData.track.id &&
+            t.name != FakeData.track.name &&
+            t.id != "1")
+        .toList();
     final currentIndex = playerState.currentIndex;
 
     if (tracks.isEmpty && state.tracks.isNotEmpty) {
@@ -223,12 +229,18 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     bool allowDuplicates = false,
   }) async {
     _assertAllowedTracks(tracks);
+    final cleanTracks = tracks.where(
+      (t) =>
+          t.id != "1" &&
+          t.id != FakeData.track.id &&
+          t.name != FakeData.track.name,
+    );
     if (state.tracks.isEmpty || state.tracks.length == 1) {
-      return addTracks(tracks);
+      return addTracks(cleanTracks);
     }
 
     final addableTracks = _blacklist
-        .filter(tracks)
+        .filter(cleanTracks)
         .where(
           (track) =>
               allowDuplicates ||
@@ -267,6 +279,11 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   Future<void> addTrack(SpotubeTrackObject track) async {
     _assertAllowedTrack(track);
 
+    if (track.id == "1" ||
+        track.id == FakeData.track.id ||
+        track.name == FakeData.track.name) {
+      return;
+    }
     if (_blacklist.contains(track)) return;
     if (state.tracks.any((element) => _compareTracks(element, track))) return;
 
@@ -287,12 +304,20 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   Future<void> addTracks(Iterable<SpotubeTrackObject> tracks) async {
     _assertAllowedTracks(tracks);
 
-    tracks = _blacklist.filter(tracks).toList();
+    final cleanTracks = tracks.where(
+      (t) =>
+          t.id != "1" &&
+          t.id != FakeData.track.id &&
+          t.name != FakeData.track.name,
+    );
+    final filtered = _blacklist.filter(cleanTracks).toList();
+    if (filtered.isEmpty) return;
+
     state = state.copyWith(
-      tracks: [...state.tracks, ...tracks],
+      tracks: [...state.tracks, ...filtered],
     );
 
-    for (final track in tracks) {
+    for (final track in filtered) {
       await audioPlayer.addTrack(SpotubeMedia(track));
     }
 
@@ -369,8 +394,15 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   }) async {
     _assertAllowedTracks(tracks);
 
+    final cleanTracks = tracks.where(
+      (t) =>
+          t.id != "1" &&
+          t.id != FakeData.track.id &&
+          t.name != FakeData.track.name,
+    );
+
     final medias = _blacklist
-        .filter(tracks)
+        .filter(cleanTracks)
         .toList()
         .asMediaList()
         .unique((a, b) => a.uri == b.uri);

@@ -10,12 +10,14 @@ final youtubeEngineProvider = Provider((ref) {
     userPreferencesProvider.select((value) => value.youtubeClientEngine),
   );
 
-  if (engineMode == YoutubeClientEngine.newPipe &&
-      NewPipeEngine.isAvailableForPlatform) {
-    return NewPipeEngine();
-  } else if (engineMode == YoutubeClientEngine.ytDlp &&
+  if (engineMode == YoutubeClientEngine.ytDlp &&
       YtDlpEngine.isAvailableForPlatform) {
     return YtDlpEngine();
+  } else if (engineMode == YoutubeClientEngine.youtubeExplode &&
+      !NewPipeEngine.isAvailableForPlatform) {
+    return YouTubeExplodeEngine();
+  } else if (NewPipeEngine.isAvailableForPlatform) {
+    return NewPipeEngine();
   } else {
     return YouTubeExplodeEngine();
   }

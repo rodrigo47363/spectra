@@ -44,8 +44,11 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       );
     }
 
-    final topTracks = topTracksQuery.asData?.value.items ??
-        List.generate(10, (index) => FakeData.track);
+    final isTopTracksLoading = activeTab.value == 0 &&
+        topTracksQuery.isLoading &&
+        topTracksQuery.asData?.value == null;
+
+    final topTracks = topTracksQuery.asData?.value.items ?? [];
 
     final allTracks = allTracksAsync.asData?.value ?? [];
 
@@ -67,10 +70,15 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       SpotubeTrackObject? currentTrack,
       bool shuffle = false,
     }) async {
-      if (tracks.isEmpty) return;
+      final playableTracks = tracks
+          .where((t) =>
+              t.id != "1" &&
+              t.id != FakeData.track.id &&
+              t.name != FakeData.track.name)
+          .toList();
+      if (playableTracks.isEmpty) return;
       isLoading.value = true;
 
-      final playableTracks = tracks.toList();
       if (shuffle) {
         playableTracks.shuffle();
       }
@@ -256,23 +264,25 @@ class ArtistPageTopTracks extends HookConsumerWidget {
             ),
           ),
         const SliverGap(8),
-        if (isAllTracksLoading)
+        if (isTopTracksLoading || isAllTracksLoading)
           SliverToBoxAdapter(
             child: Skeletonizer(
               enabled: true,
-              child: Column(
-                children: List.generate(
-                  8,
-                  (index) => TrackTile(
-                    index: index,
-                    playlist: playlist,
-                    track: FakeData.track,
+              child: IgnorePointer(
+                child: Column(
+                  children: List.generate(
+                    8,
+                    (index) => TrackTile(
+                      index: index,
+                      playlist: playlist,
+                      track: FakeData.track,
+                    ),
                   ),
                 ),
               ),
             ),
           )
-        else if (activeTab.value == 1 && filteredAllTracks.isEmpty)
+        else if (currentTracks.isEmpty)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(24.0),

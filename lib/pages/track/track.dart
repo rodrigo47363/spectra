@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
@@ -44,13 +45,36 @@ class TrackPage extends HookConsumerWidget {
 
     final trackQuery = ref.watch(metadataPluginTrackProvider(trackId));
 
-    final track = trackQuery.asData?.value ?? FakeData.track;
+    if (trackQuery.hasError) {
+      return SafeArea(
+        bottom: false,
+        child: Scaffold(
+          headers: const [
+            TitleBar(
+              backgroundColor: Colors.transparent,
+              surfaceBlur: 0,
+            )
+          ],
+          child: Center(
+            child: ErrorBox(
+              error: trackQuery.error!,
+              onRetry: () =>
+                  ref.invalidate(metadataPluginTrackProvider(trackId)),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final realTrack = trackQuery.asData?.value;
+    final track = realTrack ?? FakeData.track;
 
     void onPlay() async {
+      if (realTrack == null) return;
       if (isActive) {
         audioPlayer.pause();
       } else {
-        await playlistNotifier.load([track], autoPlay: true);
+        await playlistNotifier.load([realTrack], autoPlay: true);
       }
     }
 
@@ -90,7 +114,9 @@ class TrackPage extends HookConsumerWidget {
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Skeletonizer(
                   enabled: trackQuery.isLoading,
-                  child: Container(
+                  child: IgnorePointer(
+                    ignoring: trackQuery.isLoading,
+                    child: Container(
                     alignment: Alignment.topCenter,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -184,10 +210,13 @@ class TrackPage extends HookConsumerWidget {
                                         Button.outline(
                                           leading:
                                               const Icon(SpotubeIcons.queueAdd),
+                                          onPressed: realTrack == null
+                                              ? null
+                                              : () {
+                                                  playlistNotifier
+                                                      .addTrack(realTrack);
+                                                },
                                           child: Text(context.l10n.queue),
-                                          onPressed: () {
-                                            playlistNotifier.addTrack(track);
-                                          },
                                         ),
                                       const Gap(5),
                                       if (!isActive &&
@@ -200,10 +229,13 @@ class TrackPage extends HookConsumerWidget {
                                           child: IconButton.outline(
                                             icon: const Icon(
                                                 SpotubeIcons.lightning),
-                                            onPressed: () {
-                                              playlistNotifier
-                                                  .addTracksAtFirst([track]);
-                                            },
+                                            onPressed: realTrack == null
+                                                ? null
+                                                : () {
+                                                    playlistNotifier
+                                                        .addTracksAtFirst(
+                                                            [realTrack]);
+                                                  },
                                           ),
                                         ),
                                       const Gap(5),
@@ -246,6 +278,7 @@ class TrackPage extends HookConsumerWidget {
                       ),
                     ),
                   ),
+                ),
                 ),
               ),
             ),

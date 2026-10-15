@@ -200,6 +200,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     const plugins = [
       "spotube-plugin-musicbrainz-listenbrainz",
       "spotube-plugin-youtube-audio",
+      "spotube-plugin-spotify",
+      "spectra-plugin-spotify",
     ];
 
     for (final plugin in plugins) {

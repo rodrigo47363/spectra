@@ -31,6 +31,17 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate Env and Code
+        run: |
+          Set-Content -Path .env -Value @"
+          ENABLE_UPDATE_CHECK=0
+          LASTFM_API_KEY=""
+          LASTFM_API_SECRET=""
+          RELEASE_CHANNEL=stable
+          HIDE_DONATIONS=0
+          "@
+          dart run build_runner build --delete-conflicting-outputs
+
       - name: Build Windows Runner (Release)
         env:
           CMAKE_GENERATOR: "Visual Studio 17 2022"
@@ -38,13 +49,20 @@ jobs:
 
       - name: Compress Windows Bundle
         run: |
-          mkdir -p dist
-          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath dist\Spectra-v1.0.0-windows-x64.zip
+          if (!(Test-Path -Path "dist")) { New-Item -ItemType Directory -Path "dist" }
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath dist\Spectra-windows-x64.zip -Force
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Spectra-windows-x64
+          path: dist/Spectra-windows-x64.zip
+          if-no-files-found: error
 
       - name: Upload Windows Artifact to Release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
-          files: dist/Spectra-v1.0.0-windows-x64.zip
+          files: dist/Spectra-windows-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

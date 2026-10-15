@@ -211,6 +211,15 @@ class SafeHttpClient implements hetu_http.HttpClient {
     return map;
   }
 
+  bool _isMbOrLb(String path) {
+    final lower = path.toLowerCase();
+    final baseLower = _dio.options.baseUrl.toLowerCase();
+    return lower.contains("musicbrainz") ||
+        lower.contains("listenbrainz") ||
+        baseLower.contains("musicbrainz") ||
+        baseLower.contains("listenbrainz");
+  }
+
   @override
   Future<hetu_http.HttpResponse> request({
     required String path,
@@ -234,7 +243,8 @@ class SafeHttpClient implements hetu_http.HttpClient {
 
       var responseData = res.data;
       final statusCode = res.statusCode ?? 200;
-      final statusMessage = res.statusMessage ?? (statusCode >= 400 ? "HTTP $statusCode" : "OK");
+      final statusMessage =
+          res.statusMessage ?? (statusCode >= 400 ? "HTTP $statusCode" : "OK");
 
       if ((statusCode == 503 || statusCode == 429) && attempt < 2) {
         await Future.delayed(const Duration(milliseconds: 1000));
@@ -250,25 +260,33 @@ class SafeHttpClient implements hetu_http.HttpClient {
       if (responseData is String) {
         try {
           final decoded = jsonDecode(responseData);
-          if (decoded is Map) {
-            responseData = decoded;
-          }
+          responseData = decoded;
         } catch (_) {}
       }
 
-      if (responseData == null || (responseData is! Map && statusCode >= 400)) {
-        return _buildSafeErrorResponse(path, statusCode, statusMessage);
-      }
+      if (_isMbOrLb(path)) {
+        if (responseData == null || (responseData is! Map && statusCode >= 400)) {
+          return _buildSafeErrorResponse(path, statusCode, statusMessage);
+        }
 
-      if (responseData is Map) {
-        responseData = _normalizeResponseMap(
-          responseData,
-          statusCode,
-          statusMessage,
-          path,
-        );
+        if (responseData is Map) {
+          responseData = _normalizeResponseMap(
+            responseData,
+            statusCode,
+            statusMessage,
+            path,
+          );
+        } else if (responseData is! List) {
+          responseData = <String, dynamic>{};
+        }
       } else {
-        responseData = <String, dynamic>{};
+        if (responseData == null && statusCode >= 400) {
+          responseData = <String, dynamic>{
+            "status": statusCode,
+            "message": statusMessage,
+            "error": statusMessage,
+          };
+        }
       }
 
       return hetu_http.HttpResponse(
@@ -282,34 +300,68 @@ class SafeHttpClient implements hetu_http.HttpClient {
       final statusCode = e.response?.statusCode ?? 500;
       final statusMessage = e.message ?? "HTTP $statusCode";
 
-      if (e.response != null && e.response!.data != null) {
-        var responseData = e.response!.data;
-        if (responseData is String) {
+      if (_isMbOrLb(path)) {
+        if (e.response != null && e.response!.data != null) {
+          var responseData = e.response!.data;
+          if (responseData is String) {
+            try {
+              final decoded = jsonDecode(responseData);
+              if (decoded is Map) responseData = decoded;
+            } catch (_) {}
+          }
+          if (responseData is Map) {
+            responseData = _normalizeResponseMap(
+              responseData,
+              statusCode,
+              statusMessage,
+              path,
+            );
+            return hetu_http.HttpResponse(
+              statusCode: statusCode,
+              statusMessage: e.response!.statusMessage ?? statusMessage,
+              data: responseData,
+              headers: e.response!.headers.map,
+              isRedirect: e.response!.isRedirect,
+            );
+          }
+        }
+        return _buildSafeErrorResponse(path, statusCode, statusMessage);
+      } else {
+        var errData = e.response?.data;
+        if (errData is String) {
           try {
-            final decoded = jsonDecode(responseData);
-            if (decoded is Map) responseData = decoded;
+            errData = jsonDecode(errData);
           } catch (_) {}
         }
-        if (responseData is Map) {
-          responseData = _normalizeResponseMap(
-            responseData,
-            statusCode,
-            statusMessage,
-            path,
-          );
-          return hetu_http.HttpResponse(
-            statusCode: statusCode,
-            statusMessage: e.response!.statusMessage ?? statusMessage,
-            data: responseData,
-            headers: e.response!.headers.map,
-            isRedirect: e.response!.isRedirect,
-          );
-        }
+        errData ??= <String, dynamic>{
+          "status": statusCode,
+          "message": statusMessage,
+          "error": statusMessage,
+        };
+        return hetu_http.HttpResponse(
+          statusCode: statusCode,
+          statusMessage: e.response?.statusMessage ?? statusMessage,
+          data: errData,
+          headers: e.response?.headers.map ?? {},
+          isRedirect: e.response?.isRedirect ?? false,
+        );
       }
-
-      return _buildSafeErrorResponse(path, statusCode, statusMessage);
     } catch (e) {
-      return _buildSafeErrorResponse(path, 500, e.toString());
+      if (_isMbOrLb(path)) {
+        return _buildSafeErrorResponse(path, 500, e.toString());
+      } else {
+        return hetu_http.HttpResponse(
+          statusCode: 500,
+          statusMessage: e.toString(),
+          data: <String, dynamic>{
+            "status": 500,
+            "message": e.toString(),
+            "error": e.toString(),
+          },
+          headers: {},
+          isRedirect: false,
+        );
+      }
     }
   }
 
@@ -433,3 +485,4 @@ class SafeHttpClientClassBinding extends HTExternalClass {
     return i.htFetch(varName);
   }
 }
+

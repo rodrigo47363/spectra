@@ -40,6 +40,7 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
                 PreferencesTableCompanion.insert(
                   id: const Value(0),
                   downloadLocation: Value(defaultDownloadDir),
+                  youtubeClientEngine: const Value(YoutubeClientEngine.newPipe),
                 ),
               );
         }

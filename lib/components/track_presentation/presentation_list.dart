@@ -75,22 +75,26 @@ class PresentationListSection extends HookConsumerWidget {
       loadingBuilder: (context) {
         return Skeletonizer(
           enabled: true,
-          child: TrackTile(
-            index: 0,
-            playlist: playlist,
-            track: FakeData.track,
+          child: IgnorePointer(
+            child: TrackTile(
+              index: 0,
+              playlist: playlist,
+              track: FakeData.track,
+            ),
           ),
         );
       },
       emptyBuilder: (context) => Skeletonizer(
         enabled: true,
-        child: Column(
-          children: List.generate(
-            10,
-            (index) => TrackTile(
-              track: FakeData.track,
-              index: index,
-              playlist: playlist,
+        child: IgnorePointer(
+          child: Column(
+            children: List.generate(
+              10,
+              (index) => TrackTile(
+                track: FakeData.track,
+                index: index,
+                playlist: playlist,
+              ),
             ),
           ),
         ),
