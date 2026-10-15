@@ -67,7 +67,6 @@ installer.exe
 
 # secrets
 *.env
-lib/collections/env.g.dart
 help.txt
 
 dist
