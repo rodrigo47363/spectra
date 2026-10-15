@@ -1,6 +1,6 @@
 pkgbase = spectra-bin
 pkgdesc = Open source extensible Music streaming client for Linux
-pkgver = 1.0.0
+pkgver = 1.1.1
 pkgrel = 1
 url = https://github.com/rodrigo47363/spectra
 arch = x86_64
@@ -13,7 +13,7 @@ depends = libnotify
 depends = xdg-user-dirs
 depends = webkit2gtk-4.1
 optdepends = yt-dlp
-source = https://github.com/rodrigo47363/spectra/releases/download/v1.0.0/spectra-linux-1.0.0-x86_64.tar.xz
+source = https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/spectra-linux-1.1.1-x86_64.tar.xz
 md5sums = 475b1ae9b08f27743a4d4749391ae3db
 
 pkgname = spectra-bin

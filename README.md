@@ -8,7 +8,7 @@
 
 <br/>
 
-[![Release](https://img.shields.io/badge/Release-v1.1.0-00E5FF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rodrigo47363/spectra/releases)
+[![Release](https://img.shields.io/badge/Release-v1.1.1-00E5FF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rodrigo47363/spectra/releases)
 [![License](https://img.shields.io/badge/License-BSD--4--Clause-0A84FF?style=for-the-badge)](LICENSE)
 [![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20Linux%20%7C%20Windows-30D158?style=for-the-badge)](#-descargas-y-binarios)
 [![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero%20%2F%20No%20Tracking-FF453A?style=for-the-badge)](PRIVACY_POLICY.md)
@@ -101,35 +101,38 @@ Construido combinando la **agilidad visual de Flutter** con la **potencia de dec
 
 | Plataforma | Arquitectura | Formato de Paquete | Enlace de Descarga Directa |
 | :--- | :---: | :---: | :--- |
-| **Linux (Debian/Ubuntu/Mint/Parrot)** | `x86_64 / amd64` | Paquete `.deb` | [📥 **Descargar Spectra-v1.1.0.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.deb) |
-| **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.xz`) | [📥 **Descargar Bundle (.tar.xz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/spectra-linux-1.1.0-x86_64.tar.xz) |
-| **Linux (Universal)** | `x86_64 / amd64` | Tarball Estándar (`.tar.gz`) | [📥 **Descargar Bundle (.tar.gz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.tar.gz) |
-| **Android** | `arm64-v8a`, `armeabi-v7a`, `x86_64` | APK Universal | [📥 **Descargar APK Universal**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk) |
-| **Windows 10 / 11** | `x86_64` | Portable Bundle (`.zip`) | [📥 **Descargar Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-windows-x64.zip) |
+| **Linux (Debian/Ubuntu/Mint/Parrot)** | `x86_64 / amd64` | Paquete `.deb` | [📥 **Descargar Spectra-v1.1.1.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-v1.1.1-linux-x86_64.deb) |
+| **Linux (Universal)** | `x86_64 / amd64` | Tarball Portable (`.tar.xz`) | [📥 **Descargar Bundle (.tar.xz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/spectra-linux-1.1.1-x86_64.tar.xz) |
+| **Linux (Universal)** | `x86_64 / amd64` | Tarball Estándar (`.tar.gz`) | [📥 **Descargar Bundle (.tar.gz)**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-v1.1.1-linux-x86_64.tar.gz) |
+| **Android** | `arm64-v8a` | APK Release (Moderno) | [📥 **Descargar APK arm64-v8a**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-arm64-v8a.apk) |
+| **Android** | `armeabi-v7a` | APK Release (Legacy) | [📥 **Descargar APK armeabi-v7a**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-armeabi-v7a.apk) |
+| **Windows 10 / 11** | `x86_64` | Portable Bundle (`.zip`) | [📥 **Descargar Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip) |
 
 <details>
 <summary><b>🔐 Verificación Criptográfica de Integridad (SHA-256)</b></summary>
 <br/>
 
-Para garantizar que los binarios **no han sido alterados en tránsito**, verifica sus firmas hash contra el archivo oficial [`SHA256SUMS.txt`](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/SHA256SUMS.txt):
+Para garantizar que los binarios **no han sido alterados en tránsito**, verifica sus firmas hash contra el archivo oficial [`SHA256SUMS.txt`](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/SHA256SUMS.txt):
 
 ```bash
 # Descargar archivo de firmas y verificar automáticamente
-curl -sLO https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/SHA256SUMS.txt
+curl -sLO https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/SHA256SUMS.txt
 sha256sum --check SHA256SUMS.txt --ignore-missing
 ```
 
 | Archivo | Hash SHA-256 Oficial |
 | :--- | :--- |
-| `Spectra-v1.1.0-linux-x86_64.deb` | `329e0efe59515533b0b9abecfcf9b99f6a4a2d7887f806b11704a8e5d97eb03f` |
-| `spectra-linux-1.1.0-x86_64.tar.xz` | `6951433b5885c89038950f4cad336526524bc7716725bab7532f667ef54f0d82` |
-| `Spectra-v1.1.0-linux-x86_64.tar.gz` | `40bec88b628d1b0970b1f746ff9a002eaeedf612bf32234827dd1f2ff02e8871` |
-| `Spectra-v1.0.0-android-universal.apk` | `d765babbab3fa0f178205bcbff70c8c63a47045e0db590e54b2d1d5cdd4e706a` |
+| `Spectra-v1.1.1-linux-x86_64.deb` | `6ab5e49a2aa255f5dcdd8e07579a4541eb989d9e67c221b4c83dbd514efc4867` |
+| `spectra-linux-1.1.1-x86_64.tar.xz` | `c92be52b7881f3f98b89092d826ad6cf7bf0c74bdcd1ea9238007358a7a283e3` |
+| `Spectra-v1.1.1-linux-x86_64.tar.gz` | `9ced042f72bce7430b796a72d1208c94879117a56b39c226ebc1a8336d379b23` |
+| `Spectra-android-arm64-v8a.apk` | `da7cccd50a1b5bdfe9fe0d96001156e17ea3aba94c05a1a28a6860028fb90431` |
+| `Spectra-android-armeabi-v7a.apk` | `9aee63f81f3fe4b09dd291690e42b36aad2df5db021de28fca5771d717e5d74e` |
+| `Spectra-android-x86_64.apk` | `cb3c7c4e2567b2189cf42081f6e45ca53ae3850f64af2fdcb49c8e9d0b506c0e` |
 | `Spectra-windows-x64.zip` | `b7fbf99c32eaf011b703f00136e479528c15564c18c8aebac0c74bf15c2f0810` |
 
 </details>
 
-> 🌐 *Repositorio de binarios históricos y tags de versión: [GitHub Releases v1.1.0](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.0)*
+> 🌐 *Repositorio de binarios históricos y tags de versión: [GitHub Releases v1.1.1](https://github.com/rodrigo47363/spectra/releases/tag/v1.1.1)*
 
 ---
 
@@ -139,7 +142,7 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 <summary><b>📱 En Android (Instalación limpia sin tiendas invasivas)</b></summary>
 <br/>
 
-1. Descarga el paquete oficial: [Spectra APK Universal](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.0.0-android-universal.apk).
+1. Descarga el paquete oficial: [Spectra APK arm64-v8a](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-arm64-v8a.apk) *(o consulta `armeabi-v7a` / `x86_64` en Releases)*.
 2. Toca la notificación de descarga en tu dispositivo y concede permiso para instalar desde el navegador si el sistema lo solicita.
 3. Presiona **Instalar** y disfruta tu música.
 
@@ -154,8 +157,8 @@ sha256sum --check SHA256SUMS.txt --ignore-missing
 
 **Opción A — Vía terminal con APT:**
 ```bash
-wget https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-v1.1.0-linux-x86_64.deb
-sudo apt install -y ./Spectra-v1.1.0-linux-x86_64.deb
+wget https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-v1.1.1-linux-x86_64.deb
+sudo apt install -y ./Spectra-v1.1.1-linux-x86_64.deb
 ```
 
 **Opción B — Instalador inteligente multienlace (Debian, Arch, Fedora, openSUSE):**
@@ -169,7 +172,7 @@ curl -sSL https://raw.githubusercontent.com/rodrigo47363/spectra/main/scripts/in
 <summary><b>💻 En Windows 10 / 11 (Bundle Portable sin Instalación)</b></summary>
 <br/>
 
-1. Descarga el paquete oficial portátil: [Spectra Windows x64 (.zip)](https://github.com/rodrigo47363/spectra/releases/download/v1.1.0/Spectra-windows-x64.zip).
+1. Descarga el paquete oficial portátil: [Spectra Windows x64 (.zip)](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip).
 2. Extrae el archivo `.zip` en la carpeta de tu preferencia.
 3. Ejecuta `spotube.exe` y disfruta de tu música al instante con aceleración nativa por hardware.
 
@@ -312,7 +315,7 @@ Empaquetar instalador Debian estándar:
 ```bash
 ./scripts/package_deb.sh
 ```
-*Paquete generado en:* `dist/Spectra-v1.1.0-linux-x86_64.deb`
+*Paquete generado en:* `dist/Spectra-v1.1.1-linux-x86_64.deb`
 
 ---
 

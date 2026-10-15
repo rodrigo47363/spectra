@@ -3,7 +3,7 @@ description: Open source extensible music streaming platform and app, based on B
 
 publish_to: "none"
 
-version: 1.1.0+2
+version: 1.1.1+3
 
 homepage: https://github.com/rodrigo47363/spectra
 repository: https://github.com/rodrigo47363/spectra

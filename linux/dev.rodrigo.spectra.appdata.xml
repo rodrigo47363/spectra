@@ -43,6 +43,11 @@
   </screenshots>
   <launchable type="desktop-id">dev.rodrigo.spectra.desktop</launchable>
   <releases>
+    <release version="1.1.1" date="2026-10-15">
+      <description>
+        <p>Spectra release 1.1.1</p>
+      </description>
+    </release>
     <release version="1.1.0" date="2026-10-12">
       <description>
         <p>Spectra 1.1.0: Full artist discography, instant search, universal radio, and redesigned library cloud sync.</p>
