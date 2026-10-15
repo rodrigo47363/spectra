@@ -108,6 +108,16 @@ Construido combinando la **agilidad visual de Flutter** con la **potencia de dec
 | **Android** | `armeabi-v7a` | APK Release (Legacy) | [📥 **Descargar APK armeabi-v7a**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-armeabi-v7a.apk) |
 | **Windows 10 / 11** | `x86_64` | Portable Bundle (`.zip`) | [📥 **Descargar Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip) |
 
+### 🧭 ¿Cuál debo descargar según mi dispositivo?
+
+| Si tu dispositivo es... | Descarga este archivo | Razón / Detalle |
+| :--- | :--- | :--- |
+| 📱 **Teléfono Android moderno**<br/>*(Samsung, Xiaomi, Motorola, Pixel, Realme, etc.)* | [📥 **Spectra-android-arm64-v8a.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-arm64-v8a.apk) | **Opción para el 99% de teléfonos.** Arquitectura ARM de 64 bits con decodificación nativa de alta eficiencia y menor consumo de batería. |
+| 📱 **Teléfono Android antiguo o TV Box**<br/>*(Dispositivos de hace más de 7 años o gama de entrada)* | [📥 **Spectra-android-armeabi-v7a.apk**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-android-armeabi-v7a.apk) | Arquitectura ARM de 32 bits compatible con procesadores y versiones de Android heredadas. |
+| 💻 **PC o Laptop con Windows 10 u 11**<br/>*(Cualquier PC Intel o AMD)* | [📥 **Spectra-windows-x64.zip**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-windows-x64.zip) | Paquete portable oficial. Solo descomprimes el archivo `.zip` y ejecutas `spotube.exe` de inmediato sin instaladores. |
+| 🐧 **PC con Linux (Debian / Ubuntu / Parrot / Mint)**<br/>*(Ubuntu, Debian, Linux Mint, Parrot OS, Kali, Pop!_OS)* | [📥 **Spectra-v1.1.1-linux-x86_64.deb**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/Spectra-v1.1.1-linux-x86_64.deb) | Instalador nativo `.deb` con integración automática en el menú de aplicaciones del sistema. |
+| 🐧 **PC con Linux (Arch / Fedora / Manjaro / Portable)**<br/>*(Arch Linux, Fedora, Manjaro, openSUSE o modo portable)* | [📥 **spectra-linux-1.1.1-x86_64.tar.xz**](https://github.com/rodrigo47363/spectra/releases/download/v1.1.1/spectra-linux-1.1.1-x86_64.tar.xz) | Tarball portable universal de alta compresión. Descomprimes y ejecutas `./spectra` sin requerir permisos root. |
+
 <details>
 <summary><b>🔐 Verificación Criptográfica de Integridad (SHA-256)</b></summary>
 <br/>
